@@ -1,38 +1,57 @@
+* {
+    margin: 0;
+    padding: 0;
+
+}
+
+html, body {
+    font-size: 18px;
+    background-color: var(--color-fondo);
+    color: var(--color-texto-oscuro);
+}
+
 .App {
-  text-align: center;
+    min-height: 100vh;
+    display:inline;
+    flex-wrap: wrap;
+    aligh-itemns: center;
+    justify-conten: center;
+    text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+  background-color: var(--color-acento-claro);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.logo-container {
+    display: flex;
+    align-items: center;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    .logo-container h1 {
+        margin-left: 10px; /* Espacio entre el logo y el texto */
+    }
+
+.logo {
+    height: 50px; /* Ajusta el tamaño del logo según necesites */
 }
 
-.App-link {
-  color: #61dafb;
+.navbar {
+    display: flex;
+    gap: 20px; /* Espacio entre los enlaces del menú */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    .navbar a {
+        text-decoration: none;
+        color: #333; /* Color del texto de los enlaces */
+    }
+
+footer {
+    margin-top: 20px;
+    background-color: var(--color-acento-oscuro);
+    color: var(--color-acento-claro);
 }
