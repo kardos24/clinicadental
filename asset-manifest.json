@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/kardos24/clinicadental.git/static/css/main.48d14129.css",
+    "main.js": "/kardos24/clinicadental.git/static/js/main.2a0c5ec1.js",
+    "static/media/logo.png": "/kardos24/clinicadental.git/static/media/logo.d0f93fc36875faa3a792.png",
+    "index.html": "/kardos24/clinicadental.git/index.html",
+    "main.48d14129.css.map": "/kardos24/clinicadental.git/static/css/main.48d14129.css.map",
+    "main.2a0c5ec1.js.map": "/kardos24/clinicadental.git/static/js/main.2a0c5ec1.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.48d14129.css",
+    "static/js/main.2a0c5ec1.js"
+  ]
+}
