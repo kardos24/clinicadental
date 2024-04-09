@@ -1,7 +1,7 @@
 {
   "name": "mi-app",
   "version": "0.1.0",
-  "homepage": "https://github.com/kardos24/clinicadental.git",
+  "homepage": "https://github.com/kardos24/clinicadentalmula",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
