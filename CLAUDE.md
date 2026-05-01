@@ -6,6 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Clínica Dental Mula — Laravel 11 application for dental clinic management (patients, appointments, clinical history, dental charts) with REST API for Android app (Flutter) and Firebase push notifications.
 
+## Launching with Laragon
+
+The project runs via Laragon at **http://127.0.0.1:8080**.
+
+Setup (one-time):
+- Junction: `C:\laragon\www\ClinicaMula` → `C:\Users\Kardos\Desktop\Trabajo\Paginasweb\ClinicaMula`
+- Apache config: `C:\laragon\etc\apache2\sites-enabled\clinicamula.conf` (port 8080, DocumentRoot → `/public`)
+- Start/reload Apache: Laragon tray → **Menu → Apache → Reload**
+
 ## Development Commands
 
 ```bash
@@ -19,11 +28,11 @@ php artisan key:generate
 # Database (create MySQL database named 'clinica_mula' first)
 php artisan migrate --seed
 
-# Development server
-php artisan serve
-
 # Code linting (Laravel Pint)
 php artisan pint
+
+# Clear compiled views (run after Blade changes)
+php artisan view:clear
 
 # Debugging (Laravel Telescope — available in dev only)
 # Visit /telescope on your dev server
@@ -31,6 +40,46 @@ php artisan pint
 # Run tests (no test suite exists yet)
 php vendor/bin/phpunit
 ```
+
+## Git Workflow
+
+### Branch structure
+
+| Branch | Purpose |
+|--------|---------|
+| `master` | Production — protected, requires PR with 1 approval to merge |
+| `develop` | Stable development — merge here when a feature is ready |
+| `feature/*` | One branch per feature/fix, always branched from `develop` |
+| `main` | Legacy snapshot — do not use |
+
+### Day-to-day flow
+
+```bash
+# 1. Start a new feature or fix
+git checkout develop
+git pull origin develop
+git checkout -b feature/nombre-descriptivo
+
+# 2. Work and commit normally
+git add <files>
+git commit -m "feat: descripción del cambio"
+
+# 3. When the feature is stable, merge into develop
+git checkout develop
+git merge --no-ff feature/nombre-descriptivo
+git push origin develop
+
+# 4. Delete the feature branch
+git branch -d feature/nombre-descriptivo
+git push origin --delete feature/nombre-descriptivo
+```
+
+### Releasing to production
+
+When `develop` is stable enough for production, open a PR on GitHub:
+- **Base:** `master` ← **Compare:** `develop`
+- Review and approve the PR yourself on GitHub
+- Merge — `master` only advances via approved PRs
 
 ## Key Business Logic
 
