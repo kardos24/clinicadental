@@ -102,16 +102,9 @@
     <div style="display:flex;flex-direction:column;gap:1.5rem;">
 
         {{-- ODONTOGRAMA ──────────────────────────────────────────────────────── --}}
-        @include('components.dentadura', ['cliente' => $cliente, 'showLegend' => true])
-
-        @if(auth()->user()->isGestor())
-        <div style="text-align:center;margin-top:1rem;">
-            <button class="btn btn-primary btn-sm" onclick="abrirModalCita()">✏️ Editar dentadura</button>
-            <p style="font-size:.78rem;color:var(--texto-med);margin-top:.75rem;">
-                Haz clic en cualquier diente para cambiar su estado.
-            </p>
-        </div>
-        @endif
+        <div class="card odontograma">
+            <div class="card-header">
+                <h3 class="card-title">🦷 Odontograma</h3>
                 <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
                     @foreach(App\Models\Dentadura::ESTADOS as $key => $est)
                     <div class="leyenda-item">
