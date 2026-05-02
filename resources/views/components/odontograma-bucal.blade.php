@@ -191,11 +191,6 @@ $tieneOclusal = fn(int $n) => in_array($n, Dentadura::DIENTES_CON_OCLUSAL);
     margin: 4px auto;
     width: 92%;
 }
-/* Arcada inferior: alinear hacia arriba (coronas al centro) */
-.odon-bucal-row:last-of-type,
-.odon-bucal-row + .odon-bucal-row {
-    align-items: flex-start;
-}
 .odon-bucal-diente {
     display: flex;
     flex-direction: column;
@@ -227,13 +222,37 @@ $tieneOclusal = fn(int $n) => in_array($n, Dentadura::DIENTES_CON_OCLUSAL);
     display: block;
     overflow: visible;
     filter: drop-shadow(0 1px 1px rgba(0,0,0,.12));
+    flex-shrink: 0;
 }
-/* Arcada inferior: voltear verticalmente para que las raíces apunten arriba */
-.odon-svg-flip {
-    transform: scaleY(-1);
+
+/* Proporciones de altura — 3 secciones */
+.odon-cara-lingual,
+.odon-cara-vestibular {
+    height: calc(76px * 0.4);  /* 40% */
 }
+.odon-cara-oclusal {
+    height: calc(76px * 0.2);  /* 20% */
+}
+
+/* Para dientes sin oclusal (caninos/incisivos) — 2 secciones */
+.odon-diente-sin-oclusal .odon-cara-lingual,
+.odon-diente-sin-oclusal .odon-cara-vestibular {
+    height: 38px;  /* 50% de 76px */
+}
+
+/* Hover en SVG — oscurecer todas las secciones */
 .odon-bucal-diente:hover .odon-svg path[fill]:not([fill="none"]) {
     filter: brightness(.88);
+}
+
+/* Arcada inferior: voltear verticalmente */
+.odon-bucal-row:last-of-type {
+    transform: scaleY(-1);
+}
+
+.odon-bucal-row:last-of-type + .odon-bucal-row,
+.odon-bucal-row + .odon-bucal-row {
+    align-items: flex-start;
 }
 </style>
 @endpush
