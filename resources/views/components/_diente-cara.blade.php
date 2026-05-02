@@ -76,12 +76,14 @@ $strokeRaiz   = '#9ca3af';   // contorno raíz
 /* ── Obtener color para la cara específica ────────────────────────── */
 $d = $dentadura[(string)$num] ?? null;
 $estadoPieza = $d?->estado_pieza ?? 'presente';
-$esPresente = ($estadoPieza === 'presente' || $estadoPieza === null);
+$esPresente = ($estadoPieza === 'presente');
 
 if ($esPresente) {
     // Diente presente: colorea según la cara específica
-    $estadoCara = $d->{"cara_" . $cara} ?? null;  // null = 'sano'
-    $fill = (Dentadura::ESTADOS_CARA[$estadoCara]['color'] ?? $colorMarfil);
+    $estadoCara = $d?->{"cara_" . $cara} ?? null;  // null = 'sano'
+    $fill = (isset(Dentadura::ESTADOS_CARA[$estadoCara])
+        ? Dentadura::ESTADOS_CARA[$estadoCara]['color']
+        : $colorMarfil);
     $ausente = false;
 } else {
     // Diente ausente/corona/puente/etc: color uniforme
