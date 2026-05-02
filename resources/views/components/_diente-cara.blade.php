@@ -93,7 +93,7 @@ if ($esPresente) {
 $raizFill = $esPresente ? '#e8dece' : $fill;  // raíz más clara si sano
 @endphp
 
-<svg class="odon-svg odon-cara-{{ $cara }}" viewBox="0 0 32 72" width="34" height="76"
+<svg class="odon-svg odon-cara-{{ $cara }}" viewBox="0 0 32 72" width="34"
      xmlns="http://www.w3.org/2000/svg">
 
     {{-- Raíces --}}
