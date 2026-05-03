@@ -66,6 +66,9 @@ class CitaController extends Controller
             if (!$clienteRecord) abort(422, 'No tienes ficha de paciente.');
             $data['cliente_id'] = $clienteRecord->id;
             $data['estado']     = 'pendiente';
+        } else {
+            // Gestor crea citas directamente confirmadas
+            $data['estado'] = 'confirmada';
         }
 
         $data['gestor_id'] = auth()->user()->isGestor() ? auth()->id() : null;
