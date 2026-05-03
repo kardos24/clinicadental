@@ -51,6 +51,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/citas/{cita}',    [CitaController::class, 'update'])->name('citas.update')->middleware('gestor');
     Route::delete('/citas/{cita}', [CitaController::class, 'destroy'])->name('citas.destroy')->middleware('gestor');
 
-    // API JSON para el calendario FullCalendar
-    Route::get('/api/citas/mes', [CitaController::class, 'apiMes'])->name('api.citas.mes')->middleware('gestor');
+    // JSON para el calendario FullCalendar (sesión web — no conflicta con /api/citas/mes)
+    Route::get('/citas/eventos', [CitaController::class, 'apiMes'])->name('citas.eventos')->middleware('gestor');
 });

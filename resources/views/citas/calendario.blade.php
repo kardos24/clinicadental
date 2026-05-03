@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
         allDaySlot: false,
         height: 'auto',
         events: function(info, successCallback, failureCallback) {
-            fetch(`/api/citas/mes?year=${info.start.getFullYear()}&month=${info.start.getMonth() + 1}`)
+            fetch(`/citas/eventos?year=${info.start.getFullYear()}&month=${info.start.getMonth() + 1}`)
                 .then(r => r.json())
                 .then(data => successCallback(data))
                 .catch(() => failureCallback());

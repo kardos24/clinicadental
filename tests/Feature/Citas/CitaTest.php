@@ -114,7 +114,7 @@ class CitaTest extends TestCase
         ]);
 
         $this->actingAs($gestor)
-             ->getJson(route('api.citas.mes', ['year' => now()->year, 'month' => now()->month]))
+             ->getJson(route('citas.eventos', ['year' => now()->year, 'month' => now()->month]))
              ->assertOk()
              ->assertJsonStructure([['id', 'title', 'start', 'end', 'color']]);
     }
