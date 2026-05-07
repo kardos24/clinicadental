@@ -1,140 +1,206 @@
 {{--
-    Renderiza una sección (cara) de un diente — lingual, oclusal o vestibular.
+    Diente anatómico — vista bucal (frontal).
+    Raíces arriba + corona dividida: lingual (interior) arriba, vestibular (exterior) abajo.
+    La arcada inferior aplica scaleY(-1) en CSS para invertir la orientación.
     Props:
-      $num       — FDI número del diente (ej: 16)
-      $cara      — 'lingual', 'oclusal', 'vestibular'
+      $num       — FDI número (ej: 16)
       $dentadura — colección keyed [num => Dentadura]
+      $arcada    — 'superior' | 'inferior'
 --}}
-@props(['num' => null, 'cara' => 'lingual', 'dentadura' => null])
+@props(['num' => null, 'dentadura' => null, 'arcada' => 'inferior'])
 
 @php
 use App\Models\Dentadura;
 
-/* Helper: determinar tipo de diente */
-$getTipo = function(int $n) {
-    return match(true) {
-        in_array($n, [11,12,21,22,31,32,41,42]) => 'incisivo',
-        in_array($n, [13,23,33,43])             => 'canino',
-        in_array($n, [14,15,24,25,34,35,44,45]) => 'premolar',
-        default                                 => 'molar',
-    };
+$num  = (int)$num;
+$tipo = match(true) {
+    in_array($num, [11,12,21,22,31,32,41,42]) => 'incisivo',
+    in_array($num, [13,23,33,43])             => 'canino',
+    in_array($num, [14,15,24,25,34,35,44,45]) => 'premolar',
+    default                                   => 'molar',
 };
 
-$tipo = $getTipo((int)$num);
+$d           = $dentadura[(string)$num] ?? null;
+$estadoPieza = $d?->estado_pieza ?? 'presente';
+$esPresente  = ($estadoPieza === 'presente' || $estadoPieza === null);
+$ausente     = ($estadoPieza === 'ausente');
 
-/* ── Paths SVG (viewBox 0 0 32 72) ────────────────────────────────── */
-$svgPaths = [
+$ivory    = '#f5eedd';
+$raizFill = '#e2d4b6';
+
+if ($esPresente) {
+    $lingEst  = $d?->cara_lingual    ?? null;
+    $vestEst  = $d?->cara_vestibular ?? null;
+    $fillLing = isset(Dentadura::ESTADOS_CARA[$lingEst])
+        ? Dentadura::ESTADOS_CARA[$lingEst]['color'] : $ivory;
+    $fillVest = isset(Dentadura::ESTADOS_CARA[$vestEst])
+        ? Dentadura::ESTADOS_CARA[$vestEst]['color'] : $ivory;
+    $fillRaiz = $raizFill;
+} else {
+    $meta     = Dentadura::ESTADOS_PIEZA[$estadoPieza] ?? [];
+    $c        = $meta['color'] ?? '#6b7280';
+    $fillLing = $fillVest = $c;
+    $fillRaiz = $ausente ? 'none' : $c;
+}
+
+/*
+ * ViewBox 0 0 34 100
+ *   Raíces: y=0..36   (puntas arriba, unión corona en y=36)
+ *   Lingual (interior): y=36..62
+ *   Cuerpo rectangular (solo molares): y=62..72
+ *   Vestibular (exterior): y=62 ó 72..93
+ *
+ * La arcada inferior usa scaleY(-1) via CSS, invirtiendo la disposición:
+ *   - vestibular queda en la parte superior (hacia la línea media)
+ *   - lingual en la parte inferior
+ *   - raíces apuntan hacia abajo
+ */
+$sh = [
     'incisivo' => [
-        'corona' => 'M 6,32 L 6,15 C 6,9 9,5 12,4 L 20,4 C 23,5 26,9 26,15 L 26,32 Z',
         'raices' => [
-            'M 8,32 C 8,44 10,57 12,63 C 13,67 14,69 16,70 C 18,69 19,67 20,63 C 22,57 24,44 24,32 Z',
+            'M 17,2 C 15,2 13,7 13,20 L 13,36 L 21,36 L 21,20 C 21,7 19,2 17,2 Z',
         ],
+        'corona' => 'M 11,36 L 23,36 C 24,36 25,39 25,48 L 25,63 C 25,72 23,80 21,86 '
+                  . 'C 19,90 18,92 17,93 C 16,92 15,90 13,86 C 11,80 9,72 9,63 '
+                  . 'L 9,48 C 9,39 10,36 11,36 Z',
+        'split'  => 63,
+        'body'   => null,
         'surcos' => [],
     ],
-
     'canino' => [
-        'corona' => 'M 7,32 L 7,19 C 7,13 10,8 13,5 L 16,2 L 19,5 C 22,8 25,13 25,19 L 25,32 Z',
         'raices' => [
-            'M 9,32 C 9,45 11,58 13,65 C 14,68 15,70 16,71 C 17,70 18,68 19,65 C 21,58 23,45 23,32 Z',
+            'M 17,1 C 15,1 11,7 11,24 L 11,36 L 23,36 L 23,24 C 23,7 19,1 17,1 Z',
         ],
+        'corona' => 'M 8,36 C 7,36 6,40 6,55 L 6,68 C 6,78 8,86 12,91 '
+                  . 'C 14,94 16,96 17,97 C 18,96 20,94 22,91 '
+                  . 'C 26,86 28,78 28,68 L 28,55 C 28,40 27,36 26,36 Z',
+        'split'  => 63,
+        'body'   => null,
         'surcos' => [
-            ['type'=>'line','x1'=>16,'y1'=>4,'x2'=>16,'y2'=>28,'sw'=>0.6],
+            ['x1'=>17,'y1'=>50,'x2'=>17,'y2'=>90,'sw'=>0.6,'dash'=>true],
         ],
     ],
-
     'premolar' => [
-        'corona' => 'M 5,32 L 5,17 C 5,11 7,7 10,5 C 12,3 14,3 16,4 C 18,3 20,3 22,5 C 25,7 27,11 27,17 L 27,32 Z',
         'raices' => [
-            'M 7,32 C 7,42 8,53 9,60 C 10,64 11,67 13,67 C 14,67 15,64 15,60 C 16,53 16,42 16,32 Z',
-            'M 17,32 C 17,41 18,51 19,57 C 20,61 21,63 22,63 C 23,63 24,61 24,57 C 25,51 25,41 25,32 Z',
+            'M 11,1 C 9,1 7,6 7,22 L 7,36 L 16,36 L 16,22 C 16,6 13,1 11,1 Z',
+            'M 23,1 C 21,1 19,6 19,22 L 19,36 L 27,36 L 27,22 C 27,6 25,1 23,1 Z',
         ],
+        'corona' => 'M 5,36 L 29,36 C 30,36 31,40 31,50 L 31,64 C 31,74 29,83 27,88 '
+                  . 'C 24,92 21,94 17,95 C 13,94 10,92 7,88 '
+                  . 'C 5,83 3,74 3,64 L 3,50 C 3,40 4,36 5,36 Z',
+        'split'  => 63,
+        'body'   => null,
         'surcos' => [
-            ['type'=>'line','x1'=>16,'y1'=>4,'x2'=>16,'y2'=>26,'sw'=>0.7],
+            ['x1'=>17,'y1'=>48,'x2'=>17,'y2'=>88,'sw'=>0.65,'dash'=>false],
         ],
     ],
-
     'molar' => [
-        'corona' => 'M 2,32 L 2,17 C 2,11 4,7 7,5 C 8,3 10,2 12,2 C 14,2 15,4 16,5 C 17,4 18,2 20,2 C 22,2 24,3 25,5 C 28,7 30,11 30,17 L 30,32 Z',
         'raices' => [
-            'M 3,32 C 3,42 5,54 6,61 C 7,65 9,67 10,67 C 11,67 13,65 13,61 C 14,54 14,43 14,32 Z',
-            'M 18,32 C 18,43 18,54 19,61 C 20,65 22,67 23,67 C 24,67 26,65 27,61 C 28,54 29,42 29,32 Z',
+            'M 9,0 C 7,0 4,6 4,22 L 4,36 L 15,36 L 15,22 C 15,6 12,0 9,0 Z',
+            'M 25,0 C 23,0 20,6 20,22 L 20,36 L 30,36 L 30,22 C 30,6 27,0 25,0 Z',
         ],
+        'corona' => 'M 2,36 L 32,36 C 33,36 33,42 33,50 L 33,78 C 33,85 32,89 30,90 '
+                  . 'L 4,90 C 2,89 1,85 1,78 L 1,50 C 1,42 1,36 2,36 Z',
+        'split'  => 60,
+        'body'   => ['y1' => 60, 'y2' => 72],
         'surcos' => [
-            ['type'=>'line','x1'=>16,'y1'=>5,'x2'=>16,'y2'=>28,'sw'=>0.7],
-            ['type'=>'line','x1'=>7,'y1'=>18,'x2'=>25,'y2'=>18,'sw'=>0.5],
+            ['x1'=>17,'y1'=>48,'x2'=>17,'y2'=>82,'sw'=>0.7,'dash'=>false],
+            ['x1'=>6, 'y1'=>66,'x2'=>28,'y2'=>66,'sw'=>0.5,'dash'=>false],
         ],
     ],
 ];
 
-$paths = $svgPaths[$tipo];
-
-/* ── Colores ────────────────────────────────────────────────────── */
-$colorMarfil  = '#f7f0e2';   // diente sano
-$strokeDiente = '#374151';   // contorno diente
-$strokeRaiz   = '#9ca3af';   // contorno raíz
-
-/* ── Obtener color para la cara específica ────────────────────────── */
-$d = $dentadura[(string)$num] ?? null;
-$estadoPieza = $d?->estado_pieza ?? 'presente';
-$esPresente = ($estadoPieza === 'presente');
-
-if ($esPresente) {
-    // Diente presente: colorea según la cara específica
-    $estadoCara = $d?->{"cara_" . $cara} ?? null;  // null = 'sano'
-    $fill = (isset(Dentadura::ESTADOS_CARA[$estadoCara])
-        ? Dentadura::ESTADOS_CARA[$estadoCara]['color']
-        : $colorMarfil);
-    $ausente = false;
-} else {
-    // Diente ausente/corona/puente/etc: color uniforme
-    $meta = Dentadura::ESTADOS_PIEZA[$estadoPieza] ?? [];
-    $fill = $meta['color'] ?? '#6b7280';
-    $ausente = ($estadoPieza === 'ausente');
-}
-
-$raizFill = $esPresente ? '#e8dece' : $fill;  // raíz más clara si sano
+$s            = $sh[$tipo];
+$strokeCorona = '#374151';
+$strokeRaiz   = '#a08060';
+$isInf        = ($arcada === 'inferior');
 @endphp
 
-<svg class="odon-svg odon-cara-{{ $cara }}" viewBox="0 0 32 72" width="34"
+<svg class="odon-svg odon-diente-bucal{{ $isInf ? ' odon-diente-inf' : '' }}"
+     viewBox="0 0 34 100" width="34" height="100"
      xmlns="http://www.w3.org/2000/svg">
 
-    {{-- Raíces --}}
-    @foreach($paths['raices'] as $rp)
-    <path d="{{ $rp }}"
-          fill="{{ $raizFill }}"
-          stroke="{{ $strokeRaiz }}"
-          stroke-width="0.9"
-          stroke-linejoin="round"/>
-    @endforeach
+    <defs>
+        <clipPath id="clip-b{{ $num }}">
+            <path d="{{ $s['corona'] }}"/>
+        </clipPath>
+    </defs>
+
+    {{-- Raíces (siempre en la parte superior del SVG) --}}
+    @if(!$ausente)
+        @foreach($s['raices'] as $rp)
+        <path d="{{ $rp }}"
+              fill="{{ $fillRaiz }}"
+              stroke="{{ $strokeRaiz }}"
+              stroke-width="0.9"
+              stroke-linejoin="round"/>
+        @endforeach
+    @endif
 
     {{-- Corona --}}
     @if($ausente)
-        {{-- Contorno punteado + X --}}
-        <path d="{{ $paths['corona'] }}"
-              fill="none"
-              stroke="#94a3b8"
-              stroke-width="0.8"
-              stroke-dasharray="2,2"/>
-        <line x1="10" y1="10" x2="22" y2="28" stroke="#94a3b8" stroke-width="1.2"/>
-        <line x1="22" y1="10" x2="10" y2="28" stroke="#94a3b8" stroke-width="1.2"/>
+        <path d="{{ $s['corona'] }}" fill="none"
+              stroke="#94a3b8" stroke-width="0.8" stroke-dasharray="2,2"/>
+        <line x1="11" y1="44" x2="23" y2="82" stroke="#94a3b8" stroke-width="1.1"/>
+        <line x1="23" y1="44" x2="11" y2="82" stroke="#94a3b8" stroke-width="1.1"/>
     @else
-        <path d="{{ $paths['corona'] }}"
-              fill="{{ $fill }}"
-              stroke="{{ $strokeDiente }}"
+        {{-- Sección lingual (interior — arriba) --}}
+        <rect x="0" y="36" width="34" height="{{ $s['split'] - 36 }}"
+              clip-path="url(#clip-b{{ $num }})"
+              fill="{{ $fillLing }}"/>
+
+        @if($s['body'])
+            {{-- Cuerpo rectangular molar (zona neutra entre ambas caras) --}}
+            <rect x="0" y="{{ $s['body']['y1'] }}" width="34"
+                  height="{{ $s['body']['y2'] - $s['body']['y1'] }}"
+                  clip-path="url(#clip-b{{ $num }})"
+                  fill="{{ $ivory }}"/>
+
+            {{-- Sección vestibular (exterior — abajo), empieza tras el cuerpo --}}
+            <rect x="0" y="{{ $s['body']['y2'] }}" width="34" height="30"
+                  clip-path="url(#clip-b{{ $num }})"
+                  fill="{{ $fillVest }}"/>
+        @else
+            {{-- Sección vestibular (exterior — abajo) --}}
+            <rect x="0" y="{{ $s['split'] }}" width="34" height="37"
+                  clip-path="url(#clip-b{{ $num }})"
+                  fill="{{ $fillVest }}"/>
+        @endif
+
+        {{-- Surcos decorativos --}}
+        @foreach($s['surcos'] as $sg)
+        <line x1="{{ $sg['x1'] }}" y1="{{ $sg['y1'] }}"
+              x2="{{ $sg['x2'] }}" y2="{{ $sg['y2'] }}"
+              stroke="{{ $strokeCorona }}" stroke-width="{{ $sg['sw'] }}"
+              stroke-opacity="0.3"
+              pointer-events="none"
+              @if($sg['dash']) stroke-dasharray="1.5,2.5" @endif />
+        @endforeach
+
+        {{-- Contorno de la corona --}}
+        <path d="{{ $s['corona'] }}"
+              fill="none"
+              stroke="{{ $strokeCorona }}"
               stroke-width="1.1"
               stroke-linejoin="round"/>
 
-        {{-- Surcos decorativos --}}
-        @foreach($paths['surcos'] as $s)
-            @if($s['type'] === 'line')
-            <line x1="{{ $s['x1'] }}" y1="{{ $s['y1'] }}"
-                  x2="{{ $s['x2'] }}" y2="{{ $s['y2'] }}"
-                  stroke="{{ $strokeDiente }}"
-                  stroke-width="{{ $s['sw'] }}"
-                  stroke-opacity="0.45"
-                  pointer-events="none"/>
-            @endif
-        @endforeach
+        {{-- Línea divisoria lingual / cuerpo o lingual / vestibular --}}
+        <line x1="0" y1="{{ $s['split'] }}" x2="34" y2="{{ $s['split'] }}"
+              clip-path="url(#clip-b{{ $num }})"
+              stroke="{{ $strokeCorona }}"
+              stroke-width="0.5"
+              stroke-opacity="0.35"
+              pointer-events="none"/>
+
+        @if($s['body'])
+        {{-- Línea divisoria cuerpo / vestibular --}}
+        <line x1="0" y1="{{ $s['body']['y2'] }}" x2="34" y2="{{ $s['body']['y2'] }}"
+              clip-path="url(#clip-b{{ $num }})"
+              stroke="{{ $strokeCorona }}"
+              stroke-width="0.5"
+              stroke-opacity="0.35"
+              pointer-events="none"/>
+        @endif
     @endif
 
 </svg>

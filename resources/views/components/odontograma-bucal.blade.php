@@ -1,53 +1,41 @@
 {{--
-    Odontograma bucal — vista frontal anatómica (corona + raíz) por diente.
+    Odontograma bucal — vista frontal anatómica.
+    Arcada superior: raíces arriba, lingual (interior) arriba, vestibular (exterior) abajo.
+    Arcada inferior: simétrica (scaleY(-1) en el SVG), raíces abajo.
     Props:
       $cliente      — modelo Cliente
-      $dentadura    — colección keyed [num_diente => Dentadura] (Dentadura::mapaCliente)
-      $modoEdicion  — bool (default true). Si false, sin onclick (vista paciente)
+      $dentadura    — colección keyed [num_diente => Dentadura]
+      $modoEdicion  — bool (default true)
 --}}
 @props(['cliente', 'dentadura', 'modoEdicion' => true])
 
 @php
 use App\Models\Dentadura;
 
-/* ── Helper: datos visuales de un diente ────────────────────────────── */
 $tdato = function(int $num) use ($dentadura) {
     $d     = $dentadura[(string)$num] ?? null;
     $pieza = $d?->estado_pieza ?? 'presente';
     $esP   = ($pieza === 'presente' || $pieza === null);
 
     if ($esP) {
-        $ausente    = false;
-        $icono      = '';
-        $tooltip    = 'Diente '.$num . ($d ? ' — '.$d->resumen() : '');
+        $ausente = false;
+        $tooltip = 'Diente '.$num . ($d ? ' — '.$d->resumen() : '');
     } else {
-        $meta       = Dentadura::ESTADOS_PIEZA[$pieza] ?? [];
-        $ausente    = $pieza === 'ausente';
-        $icono      = $meta['icono'] ?? '';
-        $tooltip    = 'Diente '.$num.' — '.($meta['label'] ?? $pieza);
+        $meta    = Dentadura::ESTADOS_PIEZA[$pieza] ?? [];
+        $ausente = $pieza === 'ausente';
+        $tooltip = 'Diente '.$num.' — '.($meta['label'] ?? $pieza);
     }
 
-    return compact('ausente','icono','tooltip','esP','pieza');
+    return compact('ausente','tooltip');
 };
 
 $superiores = Dentadura::DIENTES_SUPERIORES;
 $inferiores = Dentadura::DIENTES_INFERIORES;
-
-/* Mapeo num → tipo */
-$getTipo = fn(int $n) => match(true) {
-    in_array($n, [11,12,21,22,31,32,41,42]) => 'incisivo',
-    in_array($n, [13,23,33,43])             => 'canino',
-    in_array($n, [14,15,24,25,34,35,44,45]) => 'premolar',
-    default                                 => 'molar',
-};
-
-/* Determinar si un diente tiene cara oclusal */
-$tieneOclusal = fn(int $n) => in_array($n, Dentadura::DIENTES_CON_OCLUSAL);
 @endphp
 
 <div class="odon-bucal-wrap">
 
-    {{-- ── Leyenda ──────────────────────────────────────────────────────── --}}
+    {{-- Leyenda --}}
     <div class="odon-bucal-leyenda">
         <div class="leyenda-grupo">
             <div class="leyenda-titulo">Estado de pieza</div>
@@ -59,13 +47,13 @@ $tieneOclusal = fn(int $n) => in_array($n, Dentadura::DIENTES_CON_OCLUSAL);
                 </div>
                 @endforeach
                 <div class="leyenda-item">
-                    <div class="leyenda-color" style="background:#f7f0e2;border:1px solid #d1c7b0;"></div>
+                    <div class="leyenda-color" style="background:#f5eedd;border:1px solid #c8b89a;"></div>
                     <span>Sano</span>
                 </div>
             </div>
         </div>
         <div class="leyenda-grupo">
-            <div class="leyenda-titulo">Cara vestibular</div>
+            <div class="leyenda-titulo">Cara vestibular / lingual</div>
             <div class="leyenda-items">
                 @foreach(Dentadura::ESTADOS_CARA as $key => $est)
                     @if($key !== 'sano')
@@ -79,88 +67,64 @@ $tieneOclusal = fn(int $n) => in_array($n, Dentadura::DIENTES_CON_OCLUSAL);
         </div>
     </div>
 
-    {{-- ── Arcada superior ─────────────────────────────────────────────── --}}
+    {{-- Etiqueta arcada superior --}}
     <p class="odon-bucal-label">◀ Arcada superior ▶</p>
-    <div class="odon-bucal-row">
-        @foreach($superiores as $i => $num)
-            @if($i === 8)<div class="odon-bucal-sep"></div>@endif
-            @php
-                $tipo  = $getTipo($num);
-                $td    = $tdato($num);
-                $tieneOcl = $tieneOclusal($num);
-            @endphp
-            <div class="odon-bucal-diente{{ $td['ausente'] ? ' odon-ausente' : '' }}{{ !$tieneOcl ? ' odon-diente-sin-oclusal' : '' }}"
-                 title="{{ $td['tooltip'] }}"
-                 @if($modoEdicion && auth()->user()->isGestor())
-                     onclick="abrirModalDiente({{ $num }})"
-                 @endif>
 
-                {{-- Número arriba --}}
-                <span class="odon-num">{{ $num }}</span>
+    <div class="odon-bucal-scroll">
+      <div class="odon-bucal-inner">
 
-                {{-- Cara lingual --}}
-                <x-diente-cara :num="$num" cara="lingual" :dentadura="$dentadura" />
+        {{-- Arcada superior: número arriba, SVG con raíces arriba y lingual superior --}}
+        <div class="odon-bucal-row odon-row-superior">
+            @foreach($superiores as $i => $num)
+                @if($i === 8)<div class="odon-bucal-sep"></div>@endif
+                @php $td = $tdato($num); @endphp
+                <div class="odon-bucal-diente{{ $td['ausente'] ? ' odon-ausente' : '' }}"
+                     title="{{ $td['tooltip'] }}"
+                     @if($modoEdicion && auth()->user()->isGestor())
+                         onclick="abrirModalDiente({{ $num }})"
+                     @endif>
+                    <span class="odon-num">{{ $num }}</span>
+                    <x-diente-cara :num="$num" :dentadura="$dentadura" arcada="superior" />
+                </div>
+            @endforeach
+        </div>
 
-                {{-- Cara oclusal (solo si el diente la tiene) --}}
-                @if($tieneOcl)
-                <x-diente-cara :num="$num" cara="oclusal" :dentadura="$dentadura" />
-                @endif
+        {{-- Línea oclusal central --}}
+        <div class="odon-bucal-divider"></div>
 
-                {{-- Cara vestibular --}}
-                <x-diente-cara :num="$num" cara="vestibular" :dentadura="$dentadura" />
-            </div>
-        @endforeach
-    </div>
+        {{-- Arcada inferior: SVG invertido (scaleY(-1)), número abajo --}}
+        <div class="odon-bucal-row odon-row-inferior">
+            @foreach($inferiores as $i => $num)
+                @if($i === 8)<div class="odon-bucal-sep"></div>@endif
+                @php $td = $tdato($num); @endphp
+                <div class="odon-bucal-diente{{ $td['ausente'] ? ' odon-ausente' : '' }}"
+                     title="{{ $td['tooltip'] }}"
+                     @if($modoEdicion && auth()->user()->isGestor())
+                         onclick="abrirModalDiente({{ $num }})"
+                     @endif>
+                    <x-diente-cara :num="$num" :dentadura="$dentadura" arcada="inferior" />
+                    <span class="odon-num">{{ $num }}</span>
+                </div>
+            @endforeach
+        </div>
 
-    {{-- Línea divisoria arcos --}}
-    <div class="odon-bucal-divider"></div>
+      </div>{{-- /.odon-bucal-inner --}}
+    </div>{{-- /.odon-bucal-scroll --}}
 
-    {{-- ── Arcada inferior ─────────────────────────────────────────────── --}}
-    <div class="odon-bucal-row">
-        @foreach($inferiores as $i => $num)
-            @if($i === 8)<div class="odon-bucal-sep"></div>@endif
-            @php
-                $tipo  = $getTipo($num);
-                $td    = $tdato($num);
-                $tieneOcl = $tieneOclusal($num);
-            @endphp
-            <div class="odon-bucal-diente{{ $td['ausente'] ? ' odon-ausente' : '' }}{{ !$tieneOcl ? ' odon-diente-sin-oclusal' : '' }}"
-                 title="{{ $td['tooltip'] }}"
-                 @if($modoEdicion && auth()->user()->isGestor())
-                     onclick="abrirModalDiente({{ $num }})"
-                 @endif>
-
-                {{-- Cara lingual --}}
-                <x-diente-cara :num="$num" cara="lingual" :dentadura="$dentadura" />
-
-                {{-- Cara oclusal (solo si el diente la tiene) --}}
-                @if($tieneOcl)
-                <x-diente-cara :num="$num" cara="oclusal" :dentadura="$dentadura" />
-                @endif
-
-                {{-- Cara vestibular --}}
-                <x-diente-cara :num="$num" cara="vestibular" :dentadura="$dentadura" />
-
-                {{-- Número abajo --}}
-                <span class="odon-num">{{ $num }}</span>
-            </div>
-        @endforeach
-    </div>
     <p class="odon-bucal-label">◀ Arcada inferior ▶</p>
 
     @if($modoEdicion && auth()->user()->isGestor())
-    <p style="text-align:center;font-size:.78rem;color:var(--texto-med);margin-top:.5rem;">
-        Haz clic en cualquier diente para editar su estado.
-    </p>
+    <p class="odon-bucal-hint">Haz clic en cualquier diente para editar su estado.</p>
     @endif
 </div>
 
 @push('styles')
 <style>
-/* ── Odontograma bucal ─────────────────────────────────────────────── */
+/* ── Odontograma bucal ─────────────────────────────────────────────────────── */
 .odon-bucal-wrap {
     background: #fff;
 }
+
 .odon-bucal-leyenda {
     display: flex;
     gap: 2rem;
@@ -169,28 +133,62 @@ $tieneOclusal = fn(int $n) => in_array($n, Dentadura::DIENTES_CON_OCLUSAL);
     padding-bottom: .75rem;
     border-bottom: 1px solid var(--gris-borde, #e2e8f0);
 }
+
 .odon-bucal-label {
     text-align: center;
     font-size: .72rem;
     color: var(--texto-med, #64748b);
     margin: .4rem 0 2px;
 }
+
+.odon-bucal-hint {
+    text-align: center;
+    font-size: .78rem;
+    color: var(--texto-med, #64748b);
+    margin-top: .5rem;
+}
+
+/* Contenedor desplazable en pantallas pequeñas */
+.odon-bucal-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: .25rem;
+}
+
+.odon-bucal-inner {
+    min-width: 610px;
+    padding: 0 4px;
+}
+
 .odon-bucal-row {
     display: flex;
     justify-content: center;
-    align-items: flex-end;   /* coronas se tocan en la línea media */
     gap: 2px;
     flex-wrap: nowrap;
 }
+
+/* Arcada superior: corona apunta hacia abajo (al divisor) */
+.odon-row-superior {
+    align-items: flex-end;
+}
+
+/* Arcada inferior: corona (SVG invertido) apunta hacia arriba (al divisor) */
+.odon-row-inferior {
+    align-items: flex-start;
+}
+
 .odon-bucal-sep {
     width: 10px;
     flex-shrink: 0;
+    align-self: stretch;
 }
+
 .odon-bucal-divider {
     border-top: 2px dashed var(--gris-borde, #e2e8f0);
-    margin: 4px auto;
-    width: 92%;
+    margin: 0 auto;
+    width: 94%;
 }
+
 .odon-bucal-diente {
     display: flex;
     flex-direction: column;
@@ -199,60 +197,62 @@ $tieneOclusal = fn(int $n) => in_array($n, Dentadura::DIENTES_CON_OCLUSAL);
     cursor: pointer;
     transition: transform .12s;
     position: relative;
-    padding: 1px 0;
+    padding: 0;
 }
+
 .odon-bucal-diente:hover {
     transform: scale(1.14);
     z-index: 10;
 }
+
 .odon-ausente {
-    opacity: .4;
+    opacity: .38;
 }
-.odon-diente-sin-oclusal {
-    /* Dientes que no tienen cara oclusal (incisivos, caninos) */
-}
+
 .odon-num {
-    font-size: .6rem;
+    font-size: .58rem;
     font-weight: 700;
     color: #475569;
-    line-height: 1.2;
+    line-height: 1.3;
     user-select: none;
+    white-space: nowrap;
 }
+
 .odon-svg {
     display: block;
     overflow: visible;
-    filter: drop-shadow(0 1px 1px rgba(0,0,0,.12));
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,.13));
     flex-shrink: 0;
 }
 
-/* Proporciones de altura — 3 secciones */
-.odon-cara-lingual,
-.odon-cara-vestibular {
-    height: calc(76px * 0.4);  /* 40% */
-}
-.odon-cara-oclusal {
-    height: calc(76px * 0.2);  /* 20% */
-}
-
-/* Para dientes sin oclusal (caninos/incisivos) — 2 secciones */
-.odon-diente-sin-oclusal .odon-cara-lingual,
-.odon-diente-sin-oclusal .odon-cara-vestibular {
-    height: 38px;  /* 50% de 76px */
-}
-
-/* Hover en SVG — oscurecer todas las secciones */
-.odon-bucal-diente:hover .odon-svg path[fill]:not([fill="none"]) {
-    filter: brightness(.88);
-}
-
-/* Arcada inferior: voltear verticalmente */
-.odon-bucal-row:last-of-type {
+/* Inversión del SVG para la arcada inferior */
+.odon-diente-inf {
     transform: scaleY(-1);
+    display: block;
 }
 
-.odon-bucal-row:last-of-type + .odon-bucal-row,
-.odon-bucal-row + .odon-bucal-row {
-    align-items: flex-start;
+/* ── Responsive ─────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .odon-svg.odon-diente-bucal {
+        width: 26px;
+        height: 77px;
+    }
+    .odon-bucal-sep {
+        width: 6px;
+    }
+    .odon-num {
+        font-size: .52rem;
+    }
+    .odon-bucal-leyenda {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .odon-svg.odon-diente-bucal {
+        width: 22px;
+        height: 65px;
+    }
 }
 </style>
 @endpush
