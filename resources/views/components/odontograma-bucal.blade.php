@@ -131,20 +131,20 @@ $inferiores = Dentadura::DIENTES_INFERIORES;
     flex-wrap: wrap;
     margin-bottom: .75rem;
     padding-bottom: .75rem;
-    border-bottom: 1px solid var(--gris-borde, #e2e8f0);
+    border-bottom: 1px solid var(--gray-200);
 }
 
 .odon-bucal-label {
     text-align: center;
     font-size: .72rem;
-    color: var(--texto-med, #64748b);
+    color: var(--text-light);
     margin: .4rem 0 2px;
 }
 
 .odon-bucal-hint {
     text-align: center;
     font-size: .78rem;
-    color: var(--texto-med, #64748b);
+    color: var(--text-light);
     margin-top: .5rem;
 }
 
@@ -184,7 +184,7 @@ $inferiores = Dentadura::DIENTES_INFERIORES;
 }
 
 .odon-bucal-divider {
-    border-top: 2px dashed var(--gris-borde, #e2e8f0);
+    border-top: 2px dashed var(--gray-200);
     margin: 0 auto;
     width: 94%;
 }

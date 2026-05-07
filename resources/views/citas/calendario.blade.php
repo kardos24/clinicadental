@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 @section('title', 'Calendario de citas — Clínica Dental Mula')
 @section('page-title', 'Calendario de citas')
 
@@ -13,8 +13,8 @@
 #calendario { max-width:100%; }
 .fc-event { border-radius:5px !important; font-size:.82rem !important; padding:2px 5px !important; border:none !important; }
 .fc-toolbar-title { font-family:'Playfair Display',serif !important; font-size:1.2rem !important; }
-.fc-button-primary { background:var(--azul) !important; border-color:var(--azul) !important; }
-.fc-button-primary:not(:disabled):hover { background:var(--azul-med) !important; }
+.fc-button-primary { background:var(--primary) !important; border-color:var(--primary) !important; }
+.fc-button-primary:not(:disabled):hover { background:var(--secondary) !important; }
 </style>
 @endpush
 

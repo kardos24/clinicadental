@@ -32,17 +32,6 @@
     --radius-sm:       4px;
     --radius-md:       6px;
     --radius-lg:       8px;
-    /* Aliases temporales — se eliminan en Task 7 */
-    --azul:        var(--primary);
-    --azul-oscuro: var(--primary-dark);
-    --azul-claro:  var(--primary-light);
-    --verde:       var(--success);
-    --verde-claro: var(--success-light);
-    --rojo:        var(--danger);
-    --gris-borde:  var(--gray-200);
-    --gris-fondo:  var(--gray-50);
-    --texto-med:   var(--text-light);
-    --texto-muted: var(--text-muted);
 }
 
 * {
