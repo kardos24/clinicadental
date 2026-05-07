@@ -13,11 +13,11 @@
 <div class="cliente-grid">
     <div class="cliente-sidebar">
         @include('clientes.partials._datos-personales', ['cliente' => $cliente])
-        @include('clientes.partials._citas', ['cliente' => $cliente, 'citas' => $citasFuturas])
     </div>
     <div class="cliente-main">
         @include('clientes.partials._odontograma', ['cliente' => $cliente, 'dentadura' => $dentadura])
         @include('clientes.partials._historial', ['cliente' => $cliente, 'historial' => $historial])
+        @include('clientes.partials._citas', ['cliente' => $cliente, 'citas' => $citasFuturas])
     </div>
 </div>
 @include('clientes.partials._modales', ['cliente' => $cliente, 'dentadura' => $dentadura])
