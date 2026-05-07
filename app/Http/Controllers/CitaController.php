@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCitaRequest;
 use App\Models\Cita;
 use App\Models\Cliente;
+use App\Services\CitaService;
 use App\Services\NotificacionService;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class CitaController extends Controller
 {
-    public function __construct(private NotificacionService $notificaciones)
-    {
+    public function __construct(
+        private NotificacionService $notificaciones,
+        private CitaService $citaService
+    ) {
         $this->middleware('auth');
     }
 
@@ -19,7 +22,6 @@ class CitaController extends Controller
 
     public function calendario(Request $request)
     {
-
         $year  = $request->get('year',  now()->year);
         $month = $request->get('month', now()->month);
 
@@ -28,7 +30,7 @@ class CitaController extends Controller
                      ->get()
                      ->groupBy(fn($c) => $c->fecha_hora->format('Y-m-d'));
 
-        $clientes = Cliente::orderBy('apellidos')->get(['id','apellidos','nombre']);
+        $clientes = Cliente::orderBy('apellidos')->get(['id', 'apellidos', 'nombre']);
 
         return view('citas.calendario', compact('citas', 'year', 'month', 'clientes'));
     }
@@ -40,43 +42,29 @@ class CitaController extends Controller
         $cliente = auth()->user()->cliente;
         if (!$cliente) abort(404);
 
-        $proximas  = $cliente->citasFuturas()->get();
-        $anteriores= $cliente->citas()->where('fecha_hora', '<', now())->paginate(10);
+        $proximas   = $cliente->citasFuturas()->get();
+        $anteriores = $cliente->citas()->where('fecha_hora', '<', now())->paginate(10);
 
         return view('citas.mis-citas', compact('proximas', 'anteriores'));
     }
 
     // ─── Crear cita ───────────────────────────────────────────────────────────
 
-    public function store(Request $request)
+    public function store(StoreCitaRequest $request)
     {
-        $data = $request->validate([
-            'cliente_id'       => 'required|exists:clientes,id',
-            'fecha_hora'       => 'required|date|after:now',
-            'duracion_minutos' => 'nullable|integer|min:15|max:240',
-            'motivo'           => 'required|string|max:200',
-            'notas'            => 'nullable|string',
-            // 'estado' is intentionally excluded: clients cannot control it;
-            // gestors set it explicitly below.
-        ]);
+        $data = $request->validated();
 
-        // El cliente solo puede crear citas para sí mismo
         if (auth()->user()->isCliente()) {
             $clienteRecord = auth()->user()->cliente;
             if (!$clienteRecord) abort(422, 'No tienes ficha de paciente.');
             $data['cliente_id'] = $clienteRecord->id;
             $data['estado']     = 'pendiente';
         } else {
-            // Gestor crea citas directamente confirmadas
-            $data['estado'] = 'confirmada';
+            $data['estado']    = 'confirmada';
+            $data['gestor_id'] = auth()->id();
         }
 
-        $data['gestor_id'] = auth()->user()->isGestor() ? auth()->id() : null;
-
-        $cita = Cita::create($data);
-
-        // Enviar notificación push
-        $this->notificaciones->citaCreada($cita);
+        $cita = $this->citaService->crearCita($data);
 
         if ($request->expectsJson()) {
             return response()->json(['ok' => true, 'cita' => $cita->load('cliente')]);
@@ -89,7 +77,6 @@ class CitaController extends Controller
 
     public function update(Request $request, Cita $cita)
     {
-
         $data = $request->validate([
             'fecha_hora'       => 'sometimes|date',
             'duracion_minutos' => 'sometimes|integer|min:15|max:240',
@@ -112,7 +99,6 @@ class CitaController extends Controller
     public function destroy(Cita $cita)
     {
         $cita->delete();
-
         return back()->with('success', 'Cita eliminada.');
     }
 
@@ -120,24 +106,8 @@ class CitaController extends Controller
 
     public function apiMes(Request $request)
     {
-
         $year  = $request->get('year',  now()->year);
         $month = $request->get('month', now()->month);
-
-        $citas = Cita::with('cliente:id,apellidos,nombre')
-                     ->delMes($year, $month)
-                     ->get()
-                     ->map(fn($c) => [
-                         'id'             => $c->id,
-                         'title'          => $c->cliente->nombre_completo . ' — ' . $c->motivo,
-                         'start'          => $c->fecha_hora->toIso8601String(),
-                         'end'            => $c->fecha_hora->addMinutes($c->duracion_minutos)->toIso8601String(),
-                         'color'          => $c->estado_color,
-                         'estado'         => $c->estado,
-                         'cliente_id'     => $c->cliente_id,
-                         'cliente_nombre' => $c->cliente->nombre_completo,
-                     ]);
-
-        return response()->json($citas);
+        return response()->json($this->citaService->citasDelMes($year, $month));
     }
 }
