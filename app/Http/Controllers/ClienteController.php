@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreClienteRequest;
+use App\Http\Requests\UpdateClienteRequest;
 use App\Models\Cliente;
 use App\Models\Dentadura;
+use App\Services\DentaduraService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ClienteController extends Controller
 {
-    public function __construct()
+    public function __construct(private DentaduraService $dentaduraService)
     {
         $this->middleware('auth');
         $this->middleware('gestor')->except(['show']);
@@ -39,56 +42,39 @@ class ClienteController extends Controller
 
     // ─── Guardar nuevo cliente ────────────────────────────────────────────────
 
-    public function store(Request $request)
+    public function store(StoreClienteRequest $request)
     {
-        $data = $request->validate([
-            'apellidos'    => 'required|string|max:100',
-            'nombre'       => 'required|string|max:100',
-            'edad'         => 'nullable|integer|min:0|max:150',
-            'profesion'    => 'nullable|string|max:100',
-            'direccion'    => 'nullable|string|max:200',
-            'cp'           => 'nullable|string|max:10',
-            'telefono'     => 'nullable|string|max:20',
-            'observaciones'=> 'nullable|string',
-        ]);
-
-        DB::transaction(function () use ($data) {
-            $cliente = Cliente::create($data);
+        DB::transaction(function () use ($request) {
+            $cliente = Cliente::create($request->validated());
             $cliente->num_filiacion = $cliente->generarNumFiliacion();
             $cliente->save();
 
-            // Inicializar todos los dientes como sanos
-            $dientes = array_merge(
-                Dentadura::DIENTES_SUPERIORES,
-                Dentadura::DIENTES_INFERIORES
-            );
+            $dientes = array_merge(Dentadura::DIENTES_SUPERIORES, Dentadura::DIENTES_INFERIORES);
             foreach ($dientes as $num) {
                 Dentadura::create([
                     'cliente_id'          => $cliente->id,
-                    'num_diente'          => (string)$num,
-                    'estado'              => 'sano',
+                    'num_diente'          => (string) $num,
+                    'estado_pieza'        => 'presente',
                     'fecha_actualizacion' => now(),
                 ]);
             }
         });
 
-        return redirect()->route('clientes.index')
-                         ->with('success', 'Cliente creado correctamente.');
+        return redirect()->route('clientes.index')->with('success', 'Cliente creado correctamente.');
     }
 
     // ─── Ver ficha ────────────────────────────────────────────────────────────
 
     public function show(Cliente $cliente)
     {
-        // El cliente solo puede ver su propia ficha
         if (auth()->user()->isCliente()) {
             if (auth()->user()->cliente?->id !== $cliente->id) {
                 abort(403);
             }
         }
 
-        $historial = $cliente->historialClinico()->paginate(10);
-        $dentadura = $cliente->dentadura->keyBy('num_diente');
+        $historial    = $cliente->historialClinico()->paginate(10);
+        $dentadura    = $cliente->dentadura->keyBy('num_diente');
         $citasFuturas = $cliente->citasFuturas()->get();
 
         return view('clientes.show', compact('cliente', 'historial', 'dentadura', 'citasFuturas'));
@@ -103,23 +89,10 @@ class ClienteController extends Controller
 
     // ─── Actualizar ───────────────────────────────────────────────────────────
 
-    public function update(Request $request, Cliente $cliente)
+    public function update(UpdateClienteRequest $request, Cliente $cliente)
     {
-        $data = $request->validate([
-            'apellidos'    => 'required|string|max:100',
-            'nombre'       => 'required|string|max:100',
-            'edad'         => 'nullable|integer|min:0|max:150',
-            'profesion'    => 'nullable|string|max:100',
-            'direccion'    => 'nullable|string|max:200',
-            'cp'           => 'nullable|string|max:10',
-            'telefono'     => 'nullable|string|max:20',
-            'observaciones'=> 'nullable|string',
-        ]);
-
-        $cliente->update($data);
-
-        return redirect()->route('clientes.show', $cliente)
-                         ->with('success', 'Cliente actualizado.');
+        $cliente->update($request->validated());
+        return redirect()->route('clientes.show', $cliente)->with('success', 'Cliente actualizado.');
     }
 
     // ─── Borrar (soft delete) ─────────────────────────────────────────────────
@@ -127,9 +100,7 @@ class ClienteController extends Controller
     public function destroy(Cliente $cliente)
     {
         $cliente->delete();
-
-        return redirect()->route('clientes.index')
-                         ->with('success', 'Cliente eliminado.');
+        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado.');
     }
 
     // ─── Actualizar estado dental ─────────────────────────────────────────────
@@ -138,18 +109,27 @@ class ClienteController extends Controller
     {
         if (!auth()->user()->isGestor()) abort(403);
 
+        $estadosPieza = implode(',', array_keys(Dentadura::ESTADOS_PIEZA));
+        $estadosCara  = 'sano,' . implode(',', array_keys(Dentadura::ESTADOS_CARA));
+
         $data = $request->validate([
-            'dientes'                  => 'required|array',
-            'dientes.*.num_diente'     => 'required|string',
-            'dientes.*.estado'         => 'required|in:sano,picado,caries,partido,caido,puente,sustituido',
-            'dientes.*.notas'          => 'nullable|string',
+            'dientes'                   => 'required|array',
+            'dientes.*.num_diente'      => 'required|string',
+            'dientes.*.estado_pieza'    => "nullable|in:{$estadosPieza}",
+            'dientes.*.cara_vestibular' => "nullable|in:{$estadosCara}",
+            'dientes.*.cara_lingual'    => "nullable|in:{$estadosCara}",
+            'dientes.*.cara_mesial'     => "nullable|in:{$estadosCara}",
+            'dientes.*.cara_distal'     => "nullable|in:{$estadosCara}",
+            'dientes.*.cara_oclusal'    => "nullable|in:{$estadosCara}",
+            'dientes.*.notas'           => 'nullable|string',
         ]);
 
-        foreach ($data['dientes'] as $diente) {
-            Dentadura::updateOrCreate(
-                ['cliente_id' => $cliente->id, 'num_diente' => $diente['num_diente']],
-                ['estado' => $diente['estado'], 'notas' => $diente['notas'] ?? null, 'fecha_actualizacion' => now()]
+        foreach ($data['dientes'] as $dienteData) {
+            $diente = Dentadura::firstOrCreate(
+                ['cliente_id' => $cliente->id, 'num_diente' => $dienteData['num_diente']],
+                ['fecha_actualizacion' => now()]
             );
+            $this->dentaduraService->actualizarDiente($diente, $dienteData);
         }
 
         return response()->json(['ok' => true, 'message' => 'Dentadura actualizada.']);

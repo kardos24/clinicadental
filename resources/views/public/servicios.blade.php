@@ -1,10 +1,10 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 @section('title', 'Servicios — Clínica Dental Mula')
 
 @section('content')
-<section style="padding:4rem 2rem;max-width:1000px;margin:0 auto;">
-    <h1 style="font-size:2.5rem;text-align:center;margin-bottom:.5rem;">Nuestros tratamientos</h1>
-    <p style="text-align:center;color:var(--texto-med);margin-bottom:3rem;font-size:1.05rem;">
+<section class="section-public">
+    <h1 style="font-size:clamp(1.7rem,4.5vw,2.5rem);text-align:center;margin-bottom:.5rem;">Nuestros tratamientos</h1>
+    <p style="text-align:center;color:var(--text-light);margin-bottom:3rem;font-size:1.05rem;">
         Ofrecemos una atención integral para toda la familia en Mula, Murcia.
     </p>
 
@@ -22,23 +22,23 @@
         <div style="font-size:2.5rem;flex-shrink:0;width:56px;text-align:center;">{{ $ico }}</div>
         <div style="flex:1;">
             <h2 style="font-size:1.2rem;margin-bottom:.4rem;">{{ $titulo }}</h2>
-            <p style="color:var(--texto-med);font-size:.9rem;margin-bottom:.5rem;">{{ $desc }}</p>
-            <span style="background:var(--verde-claro);color:var(--verde);font-size:.82rem;font-weight:700;
+            <p style="color:var(--text-light);font-size:.9rem;margin-bottom:.5rem;">{{ $desc }}</p>
+            <span style="background:var(--success-light);color:var(--success);font-size:.82rem;font-weight:700;
                          padding:.2rem .7rem;border-radius:20px;">💶 {{ $precio }}</span>
         </div>
     </div>
     @endforeach
 
-    <div style="background:var(--azul);color:#fff;border-radius:14px;padding:2.5rem;text-align:center;margin-top:2.5rem;">
+    <div class="cta-box">
         <h2 style="color:#fff;margin-bottom:.75rem;">¿Tienes dudas sobre algún tratamiento?</h2>
         <p style="color:rgba(255,255,255,.8);margin-bottom:1.5rem;">
             Llámanos o pide cita y te asesoramos sin compromiso. El primer diagnóstico es gratuito.
         </p>
         <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-            <a href="tel:968660000" style="background:#fff;color:var(--azul);padding:.75rem 1.5rem;border-radius:8px;font-weight:700;text-decoration:none;">
+            <a href="tel:968660000" style="background:#fff;color:var(--primary);padding:.75rem 1.5rem;border-radius:8px;font-weight:700;text-decoration:none;">
                 📞 968 66 00 00
             </a>
-            <a href="{{ route('register') }}" style="background:var(--verde);color:#fff;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;text-decoration:none;">
+            <a href="{{ route('register') }}" style="background:var(--success);color:#fff;padding:.75rem 1.5rem;border-radius:8px;font-weight:700;text-decoration:none;">
                 📅 Pedir cita online
             </a>
         </div>

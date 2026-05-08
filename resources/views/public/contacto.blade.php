@@ -1,14 +1,14 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 @section('title', 'Contacto — Clínica Dental Mula')
 
 @section('content')
-<section style="padding:4rem 2rem;max-width:900px;margin:0 auto;">
-    <h1 style="font-size:2.5rem;text-align:center;margin-bottom:.5rem;">Contacto</h1>
-    <p style="text-align:center;color:var(--texto-med);margin-bottom:3rem;">
+<section class="section-public" style="max-width:900px;">
+    <h1 style="font-size:clamp(1.7rem,4.5vw,2.5rem);text-align:center;margin-bottom:.5rem;">Contacto</h1>
+    <p style="text-align:center;color:var(--text-light);margin-bottom:3rem;">
         Estamos en el corazón de Mula. Escríbenos o llámanos.
     </p>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;">
+    <div class="grid-2col">
         <div>
             <div class="card" style="margin-bottom:1.5rem;">
                 <h3 style="margin-bottom:1rem;">📍 Datos de contacto</h3>
@@ -17,7 +17,7 @@
                     ['📞','Teléfono','968 66 00 00'],
                     ['✉️','Email','info@clinicadentalmula.es'],
                 ] as [$ico,$lbl,$val])
-                <div style="display:flex;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--gris-borde);font-size:.9rem;">
+                <div style="display:flex;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--gray-200);font-size:.9rem;">
                     <span>{{ $ico }}</span>
                     <div><strong>{{ $lbl }}:</strong> {{ $val }}</div>
                 </div>
@@ -36,10 +36,10 @@
                     ['Domingo','Cerrado'],
                 ] as [$dia,$hora])
                 <div style="display:flex;justify-content:space-between;padding:.4rem 0;
-                            border-bottom:1px solid var(--gris-borde);font-size:.88rem;">
-                    <span style="color:var(--texto-med);">{{ $dia }}</span>
+                            border-bottom:1px solid var(--gray-200);font-size:.88rem;">
+                    <span style="color:var(--text-light);">{{ $dia }}</span>
                     <span style="font-weight:{{ $dia === 'Domingo' ? '400' : '600' }};
-                                 color:{{ $dia === 'Domingo' ? '#999' : 'var(--texto)' }};">{{ $hora }}</span>
+                                 color:{{ $dia === 'Domingo' ? '#999' : 'var(--text)' }};">{{ $hora }}</span>
                 </div>
                 @endforeach
             </div>
@@ -76,7 +76,7 @@
                         <label class="form-label">Mensaje *</label>
                         <textarea class="form-control" name="mensaje" rows="4" required>{{ old('mensaje') }}</textarea>
                     </div>
-                    <div style="font-size:.78rem;color:var(--texto-med);margin-bottom:1rem;">
+                    <div style="font-size:.78rem;color:var(--text-light);margin-bottom:1rem;">
                         🔒 Tus datos se usan solo para responderte. Ver nuestra
                         <a href="#">política de privacidad</a>.
                     </div>
