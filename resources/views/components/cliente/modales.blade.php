@@ -1,4 +1,4 @@
-@props(['cliente', 'dentadura'])
+@props(['cliente'])
 
 @if(auth()->user()->isGestor())
 {{-- ── MODAL: Editar diente (multi-cara) ─────────────────────────────────── --}}

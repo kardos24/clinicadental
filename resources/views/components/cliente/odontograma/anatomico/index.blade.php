@@ -1,4 +1,4 @@
-@props(['cliente', 'dentadura', 'modoEdicion' => true])
+@props(['dentadura', 'modoEdicion' => true])
 
 @php
 use App\Models\Dentadura;

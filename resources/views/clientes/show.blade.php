@@ -16,10 +16,10 @@
     </div>
     <div class="cliente-main">
         <x-cliente.odontograma.oclusal :cliente="$cliente" :dentadura="$dentadura" />
-        <x-cliente.odontograma.anatomico :cliente="$cliente" :dentadura="$dentadura" />
+        <x-cliente.odontograma.anatomico :dentadura="$dentadura" />
         <x-cliente.historial :cliente="$cliente" :historial="$historial" />
         <x-cliente.citas :cliente="$cliente" :citas="$citasFuturas" />
     </div>
 </div>
-<x-cliente.modales :cliente="$cliente" :dentadura="$dentadura" />
+<x-cliente.modales :cliente="$cliente" />
 @endsection
