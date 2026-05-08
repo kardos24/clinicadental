@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Log;
 
 class NotificacionService
 {
-    private string $projectId;
-    private string $credentialsPath;
+    private ?string $projectId;
+    private ?string $credentialsPath;
 
     public function __construct()
     {
@@ -57,6 +57,8 @@ class NotificacionService
 
     private function enviar(int $userId, string $titulo, string $cuerpo, array $data = []): void
     {
+        if (!$this->projectId || !$this->credentialsPath) return;
+
         $tokens = DispositivoPush::where('user_id', $userId)->pluck('token_fcm')->toArray();
         if (empty($tokens)) return;
 
