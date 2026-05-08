@@ -12,13 +12,14 @@
 @section('content')
 <div class="cliente-grid">
     <div class="cliente-sidebar">
-        @include('clientes.partials._datos-personales', ['cliente' => $cliente])
+        <x-cliente.datos-personales :cliente="$cliente" />
     </div>
     <div class="cliente-main">
-        @include('clientes.partials._odontograma', ['cliente' => $cliente, 'dentadura' => $dentadura])
-        @include('clientes.partials._historial', ['cliente' => $cliente, 'historial' => $historial])
-        @include('clientes.partials._citas', ['cliente' => $cliente, 'citas' => $citasFuturas])
+        <x-cliente.odontograma.oclusal :cliente="$cliente" :dentadura="$dentadura" />
+        <x-cliente.odontograma.anatomico :cliente="$cliente" :dentadura="$dentadura" />
+        <x-cliente.historial :cliente="$cliente" :historial="$historial" />
+        <x-cliente.citas :cliente="$cliente" :citas="$citasFuturas" />
     </div>
 </div>
-@include('clientes.partials._modales', ['cliente' => $cliente, 'dentadura' => $dentadura])
+<x-cliente.modales :cliente="$cliente" :dentadura="$dentadura" />
 @endsection
