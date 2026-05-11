@@ -1040,11 +1040,7 @@ tr.section-header td:first-child {
     position: relative;
 }
 .odon-nuevo-wrap {
-    background: #faf6ee;
-    background-image:
-        linear-gradient(rgba(140,120,80,.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(140,120,80,.1) 1px, transparent 1px);
-    background-size: 20px 20px;
+    background: #fff;
     border: 1px solid #2e1a06;
     border-top: none;
     border-radius: 0 0 6px 6px;
@@ -1063,7 +1059,7 @@ tr.section-header td:first-child {
     border-left: 1.5px solid #2e1a06;
     display: flex;
     flex-direction: column;
-    background: #faf6ee;
+    background: #fff;
     font-size: .85rem;
 }
 .odon-nuevo-arch-lbl {
@@ -1100,6 +1096,7 @@ tr.section-header td:first-child {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 2px;
     width: 36px;
     flex-shrink: 0;
     cursor: pointer;
@@ -1208,7 +1205,7 @@ tr.section-header td:first-child {
 }
 .odon-nuevo-legend {
     border-top: 1.5px solid #2e1a06;
-    background: #f0e8d6;
+    background: #f8f8f8;
     padding: 6px 12px;
     display: flex;
     flex-wrap: wrap;
@@ -1217,4 +1214,10 @@ tr.section-header td:first-child {
 .odon-li { display: flex; align-items: center; gap: 3px; font-size: .7rem; color: #2e1a06; }
 .odon-ldot { width: 9px; height: 9px; border-radius: 50%; border: .6px solid rgba(0,0,0,.18); }
 .odon-saved { outline: 2px solid #059669 !important; }
+.odon-nuevo-row.lower .odon-nuevo-tc svg { transform: scaleY(-1); }
+.odon-nuevo-row.lower .odon-nuevo-tc svg text {
+    transform: scaleY(-1);
+    transform-box: fill-box;
+    transform-origin: center;
+}
 .cta-box p  { color: rgba(255,255,255,.8); margin-bottom: 1.5rem; }
