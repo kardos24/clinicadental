@@ -287,3 +287,159 @@ function odonRedrawTooth(n) {
     tmp.innerHTML = odonRenderTooth(n, arch);
     el.replaceWith(tmp.firstElementChild);
 }
+
+// ══════════════════════════════════════════════════════════════════════════
+// INTERACCIÓN — Selección, panel lateral, aplicar estados
+// ══════════════════════════════════════════════════════════════════════════
+
+function odonSelectTooth(n, e) {
+    if (e) e.stopPropagation();
+    if (odonUI.tooth && odonUI.tooth !== n) {
+        document.getElementById(`odon-tc-${odonUI.tooth}`)?.classList.remove('odon-sel');
+    }
+    odonUI.tooth = n;
+    odonUI.face  = null;
+    document.getElementById(`odon-tc-${n}`)?.classList.add('odon-sel');
+    odonUpdatePanel(n, null);
+}
+
+function odonZoneClick(n, face, e) {
+    if (e) e.stopPropagation();
+    if (odonUI.tooth && odonUI.tooth !== n) {
+        document.getElementById(`odon-tc-${odonUI.tooth}`)?.classList.remove('odon-sel');
+    }
+    odonUI.tooth = n;
+    if (face === 'root') {
+        odonSetMode('pieza');
+        face = null;
+    }
+    odonUI.face = face;
+    document.getElementById(`odon-tc-${n}`)?.classList.add('odon-sel');
+    odonUpdatePanel(n, face);
+}
+
+function odonSetMode(m) {
+    odonUI.mode = m;
+    document.getElementById('odon-btn-cara')?.classList.toggle('odon-mbtn-on', m === 'cara');
+    document.getElementById('odon-btn-pieza')?.classList.toggle('odon-mbtn-on', m === 'pieza');
+    if (odonUI.tooth) odonUpdatePanel(odonUI.tooth, odonUI.face);
+}
+
+function odonUpdatePanel(n, face) {
+    const typeLabel = {
+        inc:'Incisivo', can:'Canino', pre:'Premolar', mS:'Molar Sup.', mI:'Molar Inf.'
+    }[odonType(n)];
+    document.getElementById('odon-sel-info').innerHTML =
+        `<span class="odon-sel-num">${n}</span><span class="odon-sel-type">${typeLabel}</span>`;
+    const mrow = document.getElementById('odon-mrow');
+    if (mrow) mrow.style.display = 'flex';
+    const chips = document.getElementById('odon-fchips');
+    if (chips) {
+        chips.innerHTML = ['V','L','M','D','O'].map(f =>
+            `<div class="odon-fc${face === f ? ' odon-fc-on' : ''}"
+                  onclick="odonZoneClick(${n},'${f}',event)">${f}</div>`
+        ).join('');
+    }
+    const states  = odonUI.mode === 'cara' ? ODON_FS : ODON_PS;
+    const current = odonUI.mode === 'cara'
+        ? (face ? odonState[n]?.[face] : null)
+        : odonState[n]?.pieza;
+    const statesEl = document.getElementById('odon-states');
+    if (statesEl) {
+        statesEl.innerHTML = `<div class="odon-sgrp">
+            <div class="odon-sgrp-lbl">${odonUI.mode === 'cara' ? 'Estado de cara' : 'Estado de pieza'}</div>
+            ${states.map(s =>
+                `<div class="odon-si${s.k === current ? ' odon-si-on' : ''}"
+                      onclick="odonApplyState('${s.k}','${face || ''}')">
+                    <div class="odon-sdot" style="background:${s.c};border-color:${s.b||'rgba(0,0,0,.2)'}"></div>
+                    ${s.l}
+                </div>`
+            ).join('')}
+        </div>`;
+    }
+    odonUI.face = face;
+}
+
+function odonApplyState(stateKey, face) {
+    if (!odonUI.tooth) return;
+    const n = odonUI.tooth;
+    if (odonUI.mode === 'cara' && face) {
+        odonState[n][face] = stateKey;
+    } else if (odonUI.mode === 'pieza') {
+        odonState[n].pieza = stateKey;
+    }
+    odonRedrawTooth(n);
+    document.getElementById(`odon-tc-${n}`)?.classList.add('odon-sel');
+    odonUpdatePanel(n, face || odonUI.face);
+    odonSaveState(n);
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// SAVE AJAX — Persistencia al servidor
+// ══════════════════════════════════════════════════════════════════════════
+
+function odonSaveState(n) {
+    if (!window.odontogramaNuevoUrl || !window.odontogramaNuevoGestor) return;
+    const s = odonState[n];
+    fetch(window.odontogramaNuevoUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+            num_diente:      n,
+            estado_pieza:    s.pieza,
+            cara_vestibular: s.V,
+            cara_lingual:    s.L,
+            cara_mesial:     s.M,
+            cara_distal:     s.D,
+            cara_oclusal:    s.O,
+        }),
+    })
+    .then(r => {
+        if (!r.ok) { console.error('Odontograma save error', r.status); return; }
+        const el = document.getElementById(`odon-tc-${n}`);
+        if (el) {
+            el.classList.add('odon-saved');
+            setTimeout(() => el.classList.remove('odon-saved'), 800);
+        }
+    })
+    .catch(err => console.error('Odontograma save error', err));
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// LEYENDA + INIT
+// ══════════════════════════════════════════════════════════════════════════
+
+function odonRenderLegend() {
+    const all = [...ODON_FS.slice(1), ...ODON_PS.filter(s => s.k !== 'presente')];
+    const el = document.getElementById('odon-nuevo-legend');
+    if (el) {
+        el.innerHTML = all.map(s =>
+            `<div class="odon-li">
+                <div class="odon-ldot" style="background:${s.c}"></div>
+                <span>${s.l}</span>
+            </div>`
+        ).join('');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (!window.odontogramaNuevoData) return;
+    const raw = window.odontogramaNuevoData;
+    [...ODON_UP, ...ODON_LO].forEach(n => {
+        const d = raw[n] || {};
+        odonState[n] = {
+            pieza: d.estado_pieza    || 'presente',
+            V:     d.cara_vestibular || 'sano',
+            L:     d.cara_lingual    || 'sano',
+            M:     d.cara_mesial     || 'sano',
+            D:     d.cara_distal     || 'sano',
+            O:     d.cara_oclusal    || 'sano',
+        };
+    });
+    odonRenderBoard();
+    odonRenderLegend();
+});
