@@ -36,13 +36,15 @@ class DentaduraEndpointEstadosTest extends TestCase
     {
         $response = $this->actingAs($this->gestor)
             ->postJson(route('clientes.dentadura', $this->cliente), [
-                'num_diente'      => 16,
-                'estado_pieza'    => 'endodoncia',
-                'cara_vestibular' => 'caries_det',
-                'cara_lingual'    => 'composite',
-                'cara_mesial'     => 'sano',
-                'cara_distal'     => 'sano',
-                'cara_oclusal'    => 'amalgama',
+                'dientes' => [[
+                    'num_diente'      => '16',
+                    'estado_pieza'    => 'endodoncia',
+                    'cara_vestibular' => 'caries_det',
+                    'cara_lingual'    => 'composite',
+                    'cara_mesial'     => 'sano',
+                    'cara_distal'     => 'sano',
+                    'cara_oclusal'    => 'amalgama',
+                ]],
             ]);
 
         $response->assertOk();
@@ -69,8 +71,10 @@ class DentaduraEndpointEstadosTest extends TestCase
         foreach ($nuevos as $estado) {
             $r = $this->actingAs($this->gestor)
                 ->postJson(route('clientes.dentadura', $this->cliente), [
-                    'num_diente'   => 16,
-                    'estado_pieza' => $estado,
+                    'dientes' => [[
+                        'num_diente'   => '16',
+                        'estado_pieza' => $estado,
+                    ]],
                 ]);
             $r->assertOk("Falló para estado_pieza: {$estado}");
         }
@@ -82,8 +86,10 @@ class DentaduraEndpointEstadosTest extends TestCase
         $userCliente = User::factory()->create(['role' => 'cliente']);
         $r = $this->actingAs($userCliente)
             ->postJson(route('clientes.dentadura', $this->cliente), [
-                'num_diente'   => 16,
-                'estado_pieza' => 'caries_det',
+                'dientes' => [[
+                    'num_diente'   => '16',
+                    'estado_pieza' => 'caries_det',
+                ]],
             ]);
         $r->assertForbidden();
     }

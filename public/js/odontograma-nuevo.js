@@ -390,13 +390,15 @@ function odonSaveState(n) {
             'Accept': 'application/json',
         },
         body: JSON.stringify({
-            num_diente:      n,
-            estado_pieza:    s.pieza,
-            cara_vestibular: s.V,
-            cara_lingual:    s.L,
-            cara_mesial:     s.M,
-            cara_distal:     s.D,
-            cara_oclusal:    s.O,
+            dientes: [{
+                num_diente:      String(n),
+                estado_pieza:    s.pieza,
+                cara_vestibular: s.V,
+                cara_lingual:    s.L,
+                cara_mesial:     s.M,
+                cara_distal:     s.D,
+                cara_oclusal:    s.O,
+            }],
         }),
     })
     .then(r => {
