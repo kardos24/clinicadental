@@ -15,8 +15,7 @@
         <x-cliente.datos-personales :cliente="$cliente" />
     </div>
     <div class="cliente-main">
-        <x-cliente.odontograma.oclusal :cliente="$cliente" :dentadura="$dentadura" />
-        <x-cliente.odontograma.anatomico :dentadura="$dentadura" />
+        @include('clientes.partials._odontograma')
         <x-cliente.historial :cliente="$cliente" :historial="$historial" />
         <x-cliente.citas :cliente="$cliente" :citas="$citasFuturas" />
     </div>

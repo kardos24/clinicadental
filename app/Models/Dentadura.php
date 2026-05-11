@@ -38,12 +38,35 @@ class Dentadura extends Model
      * Determinan el estado global del diente (si está presente, ausente, etc.).
      */
     const ESTADOS_PIEZA = [
-        'presente'   => ['label' => 'Presente',   'color' => '#4ade80', 'icono' => '✓'],
-        'ausente'    => ['label' => 'Ausente',    'color' => '#6b7280', 'icono' => '○'],
-        'corona'     => ['label' => 'Corona',     'color' => '#a855f7', 'icono' => '♛'],
-        'puente'     => ['label' => 'Puente',     'color' => '#3b82f6', 'icono' => 'P'],
-        'implante'   => ['label' => 'Implante',   'color' => '#eab308', 'icono' => 'I'],
-        'endodoncia' => ['label' => 'Endodoncia', 'color' => '#f97316', 'icono' => 'E'],
+        // ── Existentes (compatibilidad API Android) ─────────────────────
+        'presente'        => ['label' => 'Presente',            'color' => '#4ade80', 'icono' => '✓'],
+        'ausente'         => ['label' => 'Ausente',             'color' => '#6b7280', 'icono' => '○'],
+        'corona'          => ['label' => 'Corona',              'color' => '#a855f7', 'icono' => '♛'],
+        'puente'          => ['label' => 'Puente',              'color' => '#3b82f6', 'icono' => 'P'],
+        'implante'        => ['label' => 'Implante',            'color' => '#eab308', 'icono' => 'I'],
+        'endodoncia'      => ['label' => 'Endodoncia',          'color' => '#f97316', 'icono' => 'E'],
+        // ── Nuevos ──────────────────────────────────────────────────────
+        'no_erupcionado'  => ['label' => 'No erupcionado',      'color' => '#fef3c7', 'icono' => '?'],
+        'extrac_indicada' => ['label' => 'Extracción indicada', 'color' => '#fca5a5', 'icono' => '!'],
+        'extraido'        => ['label' => 'Extraído',            'color' => '#9ca3af', 'icono' => '✕'],
+        'temporal'        => ['label' => 'Temporal (deciduo)',  'color' => '#f9a8d4', 'icono' => 'T'],
+        'pulpitis'        => ['label' => 'Pulpitis',            'color' => '#f97316', 'icono' => 'Pu'],
+        'necrosis'        => ['label' => 'Necrosis pulpar',     'color' => '#1f2937', 'icono' => 'N'],
+        'apicectomia'     => ['label' => 'Apicectomía',         'color' => '#0f766e', 'icono' => 'Ap'],
+        'incluido'        => ['label' => 'Incluido/Retenido',   'color' => '#7c3aed', 'icono' => 'R'],
+        'supernumerario'  => ['label' => 'Supernumerario',      'color' => '#db2777', 'icono' => 'S'],
+        'movilidad_1'     => ['label' => 'Movilidad Grado I',   'color' => '#facc15', 'icono' => 'M1'],
+        'movilidad_2'     => ['label' => 'Movilidad Grado II',  'color' => '#ea580c', 'icono' => 'M2'],
+        'movilidad_3'     => ['label' => 'Movilidad Grado III', 'color' => '#b91c1c', 'icono' => 'M3'],
+        'carilla'         => ['label' => 'Carilla',             'color' => '#93c5fd', 'icono' => 'Ca'],
+        'pilar_puente'    => ['label' => 'Pilar de puente',     'color' => '#a78bfa', 'icono' => 'Pp'],
+        'pontico'         => ['label' => 'Póntico de puente',   'color' => '#c4b5fd', 'icono' => 'Po'],
+        'prot_removible'  => ['label' => 'Prótesis removible',  'color' => '#fb923c', 'icono' => 'Pr'],
+        'giroversion'     => ['label' => 'Giroversión',         'color' => '#84cc16', 'icono' => 'G'],
+        'migracion'       => ['label' => 'Migración',           'color' => '#22d3ee', 'icono' => '→'],
+        'diastema'        => ['label' => 'Diastema',            'color' => '#e879f9', 'icono' => '◁▷'],
+        'fluorosis'       => ['label' => 'Fluorosis',           'color' => '#a3e635', 'icono' => 'F'],
+        'agenesia'        => ['label' => 'Agenesia',            'color' => '#94a3b8', 'icono' => '∅'],
     ];
 
     /**
@@ -51,12 +74,21 @@ class Dentadura extends Model
      * null significa cara sana / sin patología registrada.
      */
     const ESTADOS_CARA = [
-        'sano'       => ['label' => 'Sano',       'color' => '#4ade80'],
-        'caries'     => ['label' => 'Caries',     'color' => '#ef4444'],
-        'obturacion' => ['label' => 'Obturación', 'color' => '#f97316'],
-        'fractura'   => ['label' => 'Fractura',   'color' => '#a855f7'],
-        'sellante'   => ['label' => 'Sellante',   'color' => '#06b6d4'],
-        'desgaste'   => ['label' => 'Desgaste',   'color' => '#78716c'],
+        // ── Existentes ──────────────────────────────────────────────────
+        'sano'           => ['label' => 'Sano',             'color' => '#4ade80'],
+        'caries'         => ['label' => 'Caries',           'color' => '#ef4444'],
+        'obturacion'     => ['label' => 'Obturación',       'color' => '#f97316'],
+        'fractura'       => ['label' => 'Fractura',         'color' => '#a855f7'],
+        'sellante'       => ['label' => 'Sellante',         'color' => '#06b6d4'],
+        'desgaste'       => ['label' => 'Desgaste',         'color' => '#78716c'],
+        // ── Nuevos ──────────────────────────────────────────────────────
+        'caries_det'     => ['label' => 'Caries detenida',  'color' => '#f59e0b'],
+        'composite'      => ['label' => 'Composite',        'color' => '#3b82f6'],
+        'amalgama'       => ['label' => 'Amalgama',         'color' => '#64748b'],
+        'erosion'        => ['label' => 'Erosión',          'color' => '#d97706'],
+        'tincion'        => ['label' => 'Tinción',          'color' => '#92400e'],
+        'fisura'         => ['label' => 'Fisura',           'color' => '#374151'],
+        'reconstruccion' => ['label' => 'Reconstrucción',   'color' => '#059669'],
     ];
 
     /**
