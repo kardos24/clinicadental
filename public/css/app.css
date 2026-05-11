@@ -959,6 +959,7 @@ tr.section-header td:first-child {
 }
 
 /* ── Layout ficha de cliente ─────────────────────────────────────────────── */
+.page-col { display: flex; flex-direction: column; gap: 1.5rem; }
 .cliente-grid {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -1052,6 +1053,8 @@ tr.section-header td:first-child {
     min-width: 0;
     padding: 8px 10px;
     overflow-x: auto;
+    --odon-gap: 4px;
+    --tc-gap: 5px;
 }
 .odon-nuevo-panel {
     width: 215px;
@@ -1076,14 +1079,15 @@ tr.section-header td:first-child {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 4px;
-    min-width: 590px;
+    gap: var(--odon-gap, 4px);
+    width: 100%;
+    min-width: 0;
 }
 .odon-nuevo-row.lower { align-items: flex-start; }
 .odon-nuevo-divider {
     border-top: 2px solid #2e1a06;
-    margin: 10px auto;
-    min-width: 590px;
+    margin: 10px 0;
+    width: 100%;
 }
 .odon-nuevo-qsep {
     width: 8px;
@@ -1096,9 +1100,10 @@ tr.section-header td:first-child {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
-    width: 36px;
-    flex-shrink: 0;
+    gap: var(--tc-gap, 5px);
+    flex: 1 0 0;
+    max-width: 36px;
+    min-width: 18px;
     cursor: pointer;
     position: relative;
     border-radius: 1px;
@@ -1116,14 +1121,16 @@ tr.section-header td:first-child {
     color: #2e1a06;
     background: #ede0c4;
     border: .8px solid #4a3010;
-    width: 22px;
+    width: 100%;
     height: 13px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-sizing: border-box;
+    overflow: hidden;
 }
-.odon-nuevo-tc svg { display: block; overflow: visible; flex-shrink: 0; }
+.odon-nuevo-tc svg { display: block; overflow: visible; flex-shrink: 0; width: 100%; height: auto; }
 .odon-tz { cursor: pointer; transition: filter .12s; }
 .odon-tz:hover { filter: brightness(.72) saturate(1.4); }
 .odon-psec {
@@ -1219,5 +1226,20 @@ tr.section-header td:first-child {
     transform: scaleY(-1);
     transform-box: fill-box;
     transform-origin: center;
+}
+@media (max-width: 640px) {
+    .odon-nuevo-body { flex-direction: column; }
+    .odon-nuevo-panel {
+        width: 100%;
+        border-left: none;
+        border-top: 1.5px solid #2e1a06;
+        max-height: 230px;
+    }
+    .odon-nuevo-board { --tc-gap: 3px; }
+    .odon-nuevo-qsep { width: 5px; }
+}
+@media (max-width: 400px) {
+    .odon-nuevo-board { --odon-gap: 2px; --tc-gap: 2px; }
+    .odon-nuevo-qsep { width: 3px; }
 }
 .cta-box p  { color: rgba(255,255,255,.8); margin-bottom: 1.5rem; }
