@@ -1076,13 +1076,13 @@ tr.section-header td:first-child {
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 1px;
+    gap: 4px;
     min-width: 590px;
 }
 .odon-nuevo-row.lower { align-items: flex-start; }
 .odon-nuevo-divider {
     border-top: 2px solid #2e1a06;
-    margin: 1px auto;
+    margin: 10px auto;
     min-width: 590px;
 }
 .odon-nuevo-qsep {
@@ -1096,7 +1096,7 @@ tr.section-header td:first-child {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 5px;
     width: 36px;
     flex-shrink: 0;
     cursor: pointer;
