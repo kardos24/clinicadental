@@ -81,7 +81,7 @@ function odonFaceFill(n, face) {
 function odonRootFill(n) {
     const s = odonState[n];
     if (!s) return RF;
-    if (['ausente','extraido','agenesia'].includes(s.pieza)) return 'none';
+    if (['ausente','extraido','agenesia','no_erupcionado'].includes(s.pieza)) return 'none';
     if (s.pieza !== 'presente') return ODON_PS.find(x => x.k === s.pieza)?.c || RF;
     return RF;
 }
@@ -109,9 +109,9 @@ function odonSvgRoot(n) {
         }
     }
     const g = window.odontogramaNuevoGestor;
-    const click = g ? `onclick="odonZoneClick(${n},'root',event)"` : '';
+    const click = g ? `class="odon-tz" onclick="odonZoneClick(${n},'root',event)"` : '';
     return `<svg viewBox="0 0 36 30" width="36" height="30">
-        <rect width="36" height="30" fill="transparent" class="odon-tz" ${click} title="Raíz — pieza entera"/>
+        <rect width="36" height="30" fill="transparent" ${click} title="Raíz — pieza entera"/>
         ${p}
     </svg>`;
 }
