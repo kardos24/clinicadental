@@ -16,10 +16,10 @@
             <x-cliente.datos-personales :cliente="$cliente" />
         </div>
         <div class="cliente-main">
-            <x-cliente.citas :cliente="$cliente" :citas="$citasFuturas" />
+            @include('clientes.partials._odontograma')
         </div>
     </div>
-    @include('clientes.partials._odontograma')
+    <x-cliente.citas :cliente="$cliente" :citas="$citasFuturas" />
     <x-cliente.historial :cliente="$cliente" :historial="$historial" />
 </div>
 <x-cliente.modales :cliente="$cliente" />
