@@ -362,6 +362,7 @@ function odonUpdatePanel(n, face) {
 
 function odonApplyState(stateKey, face) {
     if (!odonUI.tooth) return;
+    if (odonUI.mode === 'cara' && !face) return;
     const n = odonUI.tooth;
     if (odonUI.mode === 'cara' && face) {
         odonState[n][face] = stateKey;
