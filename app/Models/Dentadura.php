@@ -41,10 +41,10 @@ class Dentadura extends Model
         // ── Existentes (compatibilidad API Android) ─────────────────────
         'presente'        => ['label' => 'Presente',            'color' => '#4ade80', 'icono' => '✓'],
         'ausente'         => ['label' => 'Ausente',             'color' => '#6b7280', 'icono' => '○'],
-        'corona'          => ['label' => 'Corona',              'color' => '#b45309', 'icono' => '♛'],
+        'corona'          => ['label' => 'Corona',              'color' => '#a855f7', 'icono' => '♛'],
         'puente'          => ['label' => 'Puente',              'color' => '#3b82f6', 'icono' => 'P'],
-        'implante'        => ['label' => 'Implante',            'color' => '#1d4ed8', 'icono' => 'I'],
-        'endodoncia'      => ['label' => 'Endodoncia',          'color' => '#dc2626', 'icono' => 'E'],
+        'implante'        => ['label' => 'Implante',            'color' => '#eab308', 'icono' => 'I'],
+        'endodoncia'      => ['label' => 'Endodoncia',          'color' => '#f97316', 'icono' => 'E'],
         // ── Nuevos ──────────────────────────────────────────────────────
         'no_erupcionado'  => ['label' => 'No erupcionado',      'color' => '#fef3c7', 'icono' => '?'],
         'extrac_indicada' => ['label' => 'Extracción indicada', 'color' => '#fca5a5', 'icono' => '!'],
