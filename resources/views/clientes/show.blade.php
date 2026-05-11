@@ -11,16 +11,16 @@
 
 @section('content')
 <div class="page-col">
-    @include('clientes.partials._odontograma')
     <div class="cliente-grid">
         <div class="cliente-sidebar">
             <x-cliente.datos-personales :cliente="$cliente" />
         </div>
         <div class="cliente-main">
-            <x-cliente.historial :cliente="$cliente" :historial="$historial" />
             <x-cliente.citas :cliente="$cliente" :citas="$citasFuturas" />
         </div>
     </div>
+    @include('clientes.partials._odontograma')
+    <x-cliente.historial :cliente="$cliente" :historial="$historial" />
 </div>
 <x-cliente.modales :cliente="$cliente" />
 @endsection
