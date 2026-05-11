@@ -1004,4 +1004,217 @@ tr.section-header td:first-child {
 }
 
 .cta-box h2 { color: #fff; margin-bottom: 0.75rem; }
+
+/* ══════════════════════════════════════════════════════════════════════
+   ODONTOGRAMA NUEVO — Lámina Anatómica Clásica
+   ══════════════════════════════════════════════════════════════════════ */
+
+.odon-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid #2e1a06;
+    margin-bottom: 0;
+}
+.odon-tab {
+    padding: 7px 16px;
+    font-size: .8rem;
+    font-weight: 600;
+    color: #6b4020;
+    background: #f0e8d6;
+    border: 1px solid #c8a870;
+    border-bottom: none;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    letter-spacing: .3px;
+    transition: background .12s;
+    margin-right: 2px;
+}
+.odon-tab:hover { background: #e8d8b8; }
+.odon-tab.odon-tab-active {
+    background: #faf6ee;
+    color: #2e1a06;
+    border-color: #2e1a06;
+    border-bottom: 2px solid #faf6ee;
+    margin-bottom: -2px;
+    z-index: 1;
+    position: relative;
+}
+.odon-nuevo-wrap {
+    background: #faf6ee;
+    background-image:
+        linear-gradient(rgba(140,120,80,.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(140,120,80,.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border: 1px solid #2e1a06;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    overflow: hidden;
+}
+.odon-nuevo-body { display: flex; }
+.odon-nuevo-board {
+    flex: 1;
+    min-width: 0;
+    padding: 8px 10px;
+    overflow-x: auto;
+}
+.odon-nuevo-panel {
+    width: 215px;
+    flex-shrink: 0;
+    border-left: 1.5px solid #2e1a06;
+    display: flex;
+    flex-direction: column;
+    background: #faf6ee;
+    font-size: .85rem;
+}
+.odon-nuevo-arch-lbl {
+    text-align: center;
+    font-size: .72rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: #6b4020;
+    margin: 3px 0;
+    font-family: 'Georgia', serif;
+}
+.odon-nuevo-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 1px;
+    min-width: 590px;
+}
+.odon-nuevo-row.lower { align-items: flex-start; }
+.odon-nuevo-divider {
+    border-top: 2px solid #2e1a06;
+    margin: 1px auto;
+    min-width: 590px;
+}
+.odon-nuevo-qsep {
+    width: 8px;
+    flex-shrink: 0;
+    border-left: 1px dashed #8b6030;
+    align-self: stretch;
+    margin: 4px 0;
+}
+.odon-nuevo-tc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 36px;
+    flex-shrink: 0;
+    cursor: pointer;
+    position: relative;
+    border-radius: 1px;
+    transition: background .1s;
+}
+.odon-nuevo-tc:hover { background: rgba(37,99,235,.06); }
+.odon-nuevo-tc.odon-sel {
+    background: rgba(37,99,235,.12);
+    outline: 1px solid rgba(37,99,235,.45);
+}
+.odon-nuevo-fdi {
+    font-family: 'Courier New', monospace;
+    font-size: .6rem;
+    font-weight: bold;
+    color: #2e1a06;
+    background: #ede0c4;
+    border: .8px solid #4a3010;
+    width: 22px;
+    height: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.odon-nuevo-tc svg { display: block; overflow: visible; flex-shrink: 0; }
+.odon-tz { cursor: pointer; transition: filter .12s; }
+.odon-tz:hover { filter: brightness(.72) saturate(1.4); }
+.odon-psec {
+    border-bottom: 1px solid #c8a870;
+    padding: 8px 9px;
+}
+.odon-psec:last-child {
+    border-bottom: none;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.odon-phdr {
+    font-size: .7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: #2e1a06;
+    margin-bottom: 5px;
+}
+.odon-sel-num { font-size: .95rem; font-weight: bold; color: #2e1a06; }
+.odon-sel-type { font-size: .78rem; color: #6b4020; margin-left: 3px; }
+.odon-face-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+.odon-fc {
+    font-size: .65rem;
+    padding: 2px 6px;
+    border: .8px solid #4a3010;
+    background: #ede0c4;
+    color: #2e1a06;
+    cursor: pointer;
+    border-radius: 1px;
+    font-family: 'Courier New', monospace;
+}
+.odon-fc.odon-fc-on { background: #2e1a06; color: #f5f0e8; }
+.odon-mode-row { display: flex; gap: 4px; margin-top: 6px; }
+.odon-mbtn {
+    flex: 1;
+    font-size: .7rem;
+    padding: 4px 2px;
+    border: .8px solid #4a3010;
+    background: #ede0c4;
+    color: #2e1a06;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    text-align: center;
+    border-radius: 1px;
+}
+.odon-mbtn.odon-mbtn-on { background: #2e1a06; color: #f5f0e8; }
+.odon-states { flex: 1; overflow-y: auto; padding-top: 2px; }
+.odon-sgrp { margin-bottom: 6px; }
+.odon-sgrp-lbl {
+    font-size: .65rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #6b4020;
+    letter-spacing: .3px;
+    margin-bottom: 2px;
+    padding-left: 2px;
+}
+.odon-si {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: .78rem;
+    color: #2e1a06;
+    padding: 2px 4px;
+    cursor: pointer;
+    border-radius: 1px;
+    font-family: 'Georgia', serif;
+}
+.odon-si:hover { background: #e8d8b8; }
+.odon-si.odon-si-on { background: #2e1a06; color: #f5f0e8; }
+.odon-sdot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    border: .7px solid rgba(0,0,0,.2);
+    flex-shrink: 0;
+}
+.odon-nuevo-legend {
+    border-top: 1.5px solid #2e1a06;
+    background: #f0e8d6;
+    padding: 6px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+}
+.odon-li { display: flex; align-items: center; gap: 3px; font-size: .7rem; color: #2e1a06; }
+.odon-ldot { width: 9px; height: 9px; border-radius: 50%; border: .6px solid rgba(0,0,0,.18); }
+.odon-saved { outline: 2px solid #059669 !important; }
 .cta-box p  { color: rgba(255,255,255,.8); margin-bottom: 1.5rem; }
