@@ -128,22 +128,22 @@ function odonSvgCrownV(n) {
     let d = '', dec = '';
     if (t === 'inc') {
         d = 'M10,2L26,2C28,2 30,5 30,11L30,34C30,39 24,41 18,41C12,41 6,39 6,34L6,11C6,5 8,2 10,2Z';
-        dec = `<ellipse cx="11" cy="3" rx="3" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5"/>
-               <ellipse cx="18" cy="2" rx="3" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5"/>
-               <ellipse cx="25" cy="3" rx="3" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5"/>`;
+        dec = `<ellipse cx="11" cy="3" rx="3" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5" pointer-events="none"/>
+               <ellipse cx="18" cy="2" rx="3" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5" pointer-events="none"/>
+               <ellipse cx="25" cy="3" rx="3" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5" pointer-events="none"/>`;
     } else if (t === 'can') {
         d = 'M8,0L28,0C30,0 32,6 32,15L32,34C32,41 25,45 18,45C11,45 4,41 4,34L4,15C4,6 6,0 8,0Z';
-        dec = `<path d="M10,0L18,-4L26,0" fill="${f}" stroke="${SK}" stroke-width=".6" stroke-linejoin="round"/>`;
+        dec = `<path d="M10,0L18,-4L26,0" fill="${f}" stroke="${SK}" stroke-width=".6" stroke-linejoin="round" pointer-events="none"/>`;
     } else if (t === 'pre') {
         d = 'M6,1L30,1C32,1 33,4 33,9L33,30C33,37 27,40 18,40C9,40 3,37 3,30L3,9C3,4 4,1 6,1Z';
-        dec = `<ellipse cx="12" cy="2" rx="5" ry="3.5" fill="${f}" stroke="${SK}" stroke-width=".5"/>
-               <ellipse cx="24" cy="2" rx="5" ry="3.5" fill="${f}" stroke="${SK}" stroke-width=".5"/>
+        dec = `<ellipse cx="12" cy="2" rx="5" ry="3.5" fill="${f}" stroke="${SK}" stroke-width=".5" pointer-events="none"/>
+               <ellipse cx="24" cy="2" rx="5" ry="3.5" fill="${f}" stroke="${SK}" stroke-width=".5" pointer-events="none"/>
                <line x1="18" y1="5" x2="18" y2="36" stroke="${SK}" stroke-width=".6" opacity=".2" pointer-events="none"/>`;
     } else {
         d = 'M2,0L34,0C36,0 36,4 36,8L36,30C36,36 28,38 18,38C8,38 0,36 0,30L0,8C0,4 0,0 2,0Z';
-        dec = `<ellipse cx="8" cy="2" rx="5.5" ry="3.5" fill="${f}" stroke="${SK}" stroke-width=".5"/>
-               <ellipse cx="18" cy="1" rx="4" ry="3" fill="${f}" stroke="${SK}" stroke-width=".5"/>
-               <ellipse cx="28" cy="2" rx="5.5" ry="3.5" fill="${f}" stroke="${SK}" stroke-width=".5"/>`;
+        dec = `<ellipse cx="8" cy="2" rx="5.5" ry="3.5" fill="${f}" stroke="${SK}" stroke-width=".5" pointer-events="none"/>
+               <ellipse cx="18" cy="1" rx="4" ry="3" fill="${f}" stroke="${SK}" stroke-width=".5" pointer-events="none"/>
+               <ellipse cx="28" cy="2" rx="5.5" ry="3.5" fill="${f}" stroke="${SK}" stroke-width=".5" pointer-events="none"/>`;
     }
     const h = t === 'can' ? 45 : (t === 'inc' ? 41 : 40);
     const g = window.odontogramaNuevoGestor;
@@ -230,10 +230,10 @@ function odonSvgCrownL(n) {
     let d = '', dec = '';
     if (t === 'inc') {
         d = 'M11,0L25,0C27,0 28,3 28,8L28,22C28,26 23,28 18,28C13,28 8,26 8,22L8,8C8,3 9,0 11,0Z';
-        dec = `<ellipse cx="18" cy="24" rx="5" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5" opacity=".5"/>`;
+        dec = `<ellipse cx="18" cy="24" rx="5" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5" opacity=".5" pointer-events="none"/>`;
     } else if (t === 'can') {
         d = 'M10,0L26,0C28,0 30,4 30,11L30,26C30,31 24,33 18,33C12,33 6,31 6,26L6,11C6,4 8,0 10,0Z';
-        dec = `<ellipse cx="18" cy="29" rx="5" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5" opacity=".5"/>`;
+        dec = `<ellipse cx="18" cy="29" rx="5" ry="2.5" fill="${f}" stroke="${SK}" stroke-width=".5" opacity=".5" pointer-events="none"/>`;
     } else if (t === 'pre') {
         d = 'M8,0L28,0C30,0 30,3 30,7L30,22C30,27 24,29 18,29C12,29 6,27 6,22L6,7C6,3 6,0 8,0Z';
     } else {
