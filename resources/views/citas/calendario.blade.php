@@ -512,6 +512,34 @@ function abrirModalDetalle(fcEvent) {
     document.getElementById('modal-detalle-cita').classList.add('open');
 }
 
+function cambiarEstadoCita(nuevoEstado, btn) {
+    if (!citaActual) return;
+    const textoOriginal = btn.textContent;
+    btn.disabled    = true;
+    btn.textContent = 'Guardando…';
+
+    fetch(`/citas/${citaActual.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type':  'application/json',
+            'Accept':        'application/json',
+            'X-CSRF-TOKEN':  document.querySelector('meta[name="csrf-token"]').content,
+        },
+        body: JSON.stringify({ estado: nuevoEstado }),
+    })
+    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+    .then(() => {
+        citaActual.setExtendedProp('estado', nuevoEstado);
+        citaActual.setProp('color', COLORES_ESTADO[nuevoEstado] || '#6b7280');
+        document.getElementById('modal-detalle-cita').classList.remove('open');
+    })
+    .catch(() => {
+        btn.disabled    = false;
+        btn.textContent = textoOriginal;
+        alert('No se pudo actualizar la cita. Recarga la página e inténtalo de nuevo.');
+    });
+}
+
 function abrirModalNuevaCita(date) {
     const input = document.getElementById('fc-fecha-input');
     if (date) {
