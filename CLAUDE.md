@@ -54,6 +54,9 @@ php artisan key:generate
 # Database (create MySQL database named 'clinica_mula' first)
 php artisan migrate --seed
 
+# Demo data — 7 patients with history, appointments and odontogram (dev only, never run in production)
+php artisan db:seed --class=DemoClientesSeeder
+
 # Code formatting (Laravel Pint)
 php artisan pint
 
