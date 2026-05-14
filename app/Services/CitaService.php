@@ -26,6 +26,25 @@ class CitaService
         return $cita->fresh();
     }
 
+    public function citasPorRango(string $start, string $end): Collection
+    {
+        return Cita::with('cliente:id,apellidos,nombre')
+            ->where('fecha_hora', '>=', $start)
+            ->where('fecha_hora', '<',  $end)
+            ->orderBy('fecha_hora')
+            ->get()
+            ->map(fn($c) => [
+                'id'             => $c->id,
+                'title'          => $c->cliente->nombre_completo . ' — ' . $c->motivo,
+                'start'          => $c->fecha_hora->toIso8601String(),
+                'end'            => $c->fecha_hora->addMinutes($c->duracion_minutos)->toIso8601String(),
+                'color'          => $c->estado_color,
+                'estado'         => $c->estado,
+                'cliente_id'     => $c->cliente_id,
+                'cliente_nombre' => $c->cliente->nombre_completo,
+            ]);
+    }
+
     public function citasDelMes(int $year, int $month): Collection
     {
         return Cita::with('cliente:id,apellidos,nombre')

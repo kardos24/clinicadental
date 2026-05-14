@@ -20,19 +20,10 @@ class CitaController extends Controller
 
     // ─── Calendario (solo gestor) ─────────────────────────────────────────────
 
-    public function calendario(Request $request)
+    public function calendario()
     {
-        $year  = $request->get('year',  now()->year);
-        $month = $request->get('month', now()->month);
-
-        $citas = Cita::with('cliente')
-                     ->delMes($year, $month)
-                     ->get()
-                     ->groupBy(fn($c) => $c->fecha_hora->format('Y-m-d'));
-
         $clientes = Cliente::orderBy('apellidos')->get(['id', 'apellidos', 'nombre']);
-
-        return view('citas.calendario', compact('citas', 'year', 'month', 'clientes'));
+        return view('citas.calendario', compact('clientes'));
     }
 
     // ─── Listado de citas del cliente autenticado ─────────────────────────────
@@ -102,12 +93,12 @@ class CitaController extends Controller
         return back()->with('success', 'Cita eliminada.');
     }
 
-    // ─── API: citas del mes en JSON (para calendario JS) ──────────────────────
+    // ─── API: citas del rango visible en JSON (para calendario JS) ───────────
 
     public function apiMes(Request $request)
     {
-        $year  = $request->get('year',  now()->year);
-        $month = $request->get('month', now()->month);
-        return response()->json($this->citaService->citasDelMes($year, $month));
+        $start = $request->get('start', now()->startOfMonth()->toDateString());
+        $end   = $request->get('end',   now()->endOfMonth()->addDay()->toDateString());
+        return response()->json($this->citaService->citasPorRango($start, $end));
     }
 }
