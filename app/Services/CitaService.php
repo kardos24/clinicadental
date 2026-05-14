@@ -37,7 +37,7 @@ class CitaService
                 'id'             => $c->id,
                 'title'          => $c->cliente->nombre_completo . ' — ' . $c->motivo,
                 'start'          => $c->fecha_hora->toIso8601String(),
-                'end'            => $c->fecha_hora->addMinutes($c->duracion_minutos)->toIso8601String(),
+                'end'            => $c->fecha_hora->copy()->addMinutes($c->duracion_minutos)->toIso8601String(),
                 'color'          => $c->estado_color,
                 'estado'         => $c->estado,
                 'motivo'         => $c->motivo,
