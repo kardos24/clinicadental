@@ -328,15 +328,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         eventClick: function(info) {
             info.jsEvent.stopPropagation();
-            const e = info.event;
-            const props = e.extendedProps;
-            const partes = e.title.split(' — ');
-            alert([
-                `Paciente: ${props.cliente_nombre}`,
-                `Motivo: ${partes[1] || partes[0]}`,
-                `Estado: ${props.estado}`,
-                `Inicio: ${e.start.toLocaleString('es-ES')}`,
-            ].join('\n'));
+            abrirModalDetalle(info.event);
         },
 
         dateClick: function(info) {
@@ -454,6 +446,71 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === this) this.classList.remove('open');
     });
 });
+
+const COLORES_ESTADO = {
+    pendiente:     '#f97316',
+    confirmada:    '#3b82f6',
+    realizada:     '#4ade80',
+    cancelada:     '#ef4444',
+    no_presentado: '#6b7280',
+};
+
+const LABELS_ESTADO = {
+    pendiente:     'Pendiente',
+    confirmada:    'Confirmada',
+    realizada:     'Realizada',
+    cancelada:     'Cancelada',
+    no_presentado: 'No se presentó',
+};
+
+let citaActual = null;
+
+function abrirModalDetalle(fcEvent) {
+    citaActual = fcEvent;
+    const props  = fcEvent.extendedProps;
+    const estado = props.estado;
+    const color  = COLORES_ESTADO[estado] || '#6b7280';
+
+    document.getElementById('detalle-header').style.background = color;
+    document.getElementById('detalle-estado-badge').textContent = LABELS_ESTADO[estado] || estado;
+
+    const optsDate = { weekday: 'long', day: 'numeric', month: 'long' };
+    const optsTime = { hour: '2-digit', minute: '2-digit' };
+    const fechaStr = fcEvent.start.toLocaleDateString('es-ES', optsDate);
+    const horaIni  = fcEvent.start.toLocaleTimeString('es-ES', optsTime);
+    const horaFin  = fcEvent.end ? fcEvent.end.toLocaleTimeString('es-ES', optsTime) : '';
+    document.getElementById('detalle-fecha').textContent =
+        horaFin ? `${fechaStr} · ${horaIni}–${horaFin}` : `${fechaStr} · ${horaIni}`;
+
+    const link = document.getElementById('detalle-paciente-link');
+    link.textContent = props.cliente_nombre;
+    link.href = `/clientes/${props.cliente_id}`;
+
+    document.getElementById('detalle-motivo').textContent = props.motivo || '—';
+    document.getElementById('detalle-notas').textContent  = props.notas  || '—';
+
+    const durMin = (fcEvent.end && fcEvent.start)
+        ? Math.round((fcEvent.end - fcEvent.start) / 60000)
+        : null;
+    document.getElementById('detalle-duracion').textContent = durMin ? `${durMin} min` : '—';
+
+    document.getElementById('detalle-botones-estado').innerHTML =
+        Object.entries(LABELS_ESTADO)
+            .filter(([key]) => key !== estado)
+            .map(([key, label]) =>
+                `<button class="detalle-btn-estado" onclick="cambiarEstadoCita('${key}', this)">${label}</button>`
+            ).join('');
+
+    const btnElim = document.getElementById('detalle-btn-eliminar');
+    btnElim.textContent         = '🗑 Eliminar cita';
+    btnElim.disabled            = false;
+    btnElim._confirmPending     = false;
+    btnElim.style.background    = '#fef2f2';
+    btnElim.style.color         = '#ef4444';
+    btnElim.style.border        = '1px solid #fecaca';
+
+    document.getElementById('modal-detalle-cita').classList.add('open');
+}
 
 function abrirModalNuevaCita(date) {
     const input = document.getElementById('fc-fecha-input');
