@@ -440,6 +440,64 @@ document.addEventListener('DOMContentLoaded', function () {
         abrirModalNuevaCita(selectedDate);
     });
 
+    // ── Modal detalle ─────────────────────────────────────────────────────────
+
+    document.getElementById('detalle-close').addEventListener('click', function() {
+        document.getElementById('modal-detalle-cita').classList.remove('open');
+    });
+
+    document.getElementById('modal-detalle-cita').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+    });
+
+    document.getElementById('detalle-btn-eliminar').addEventListener('click', function() {
+        if (!citaActual) return;
+
+        if (!this._confirmPending) {
+            this._confirmPending  = true;
+            this.textContent      = '¿Seguro? Clic para confirmar';
+            this.style.background = '#ef4444';
+            this.style.color      = '#fff';
+            this.style.border     = '1px solid #ef4444';
+
+            const btn = this;
+            btn._confirmTimer = setTimeout(() => {
+                btn._confirmPending  = false;
+                btn.textContent      = '🗑 Eliminar cita';
+                btn.style.background = '#fef2f2';
+                btn.style.color      = '#ef4444';
+                btn.style.border     = '1px solid #fecaca';
+            }, 3000);
+            return;
+        }
+
+        clearTimeout(this._confirmTimer);
+        this.disabled    = true;
+        this.textContent = 'Eliminando…';
+
+        fetch(`/citas/${citaActual.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept':       'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            },
+        })
+        .then(r => { if (!r.ok) throw new Error(); })
+        .then(() => {
+            citaActual.remove();
+            document.getElementById('modal-detalle-cita').classList.remove('open');
+        })
+        .catch(() => {
+            this.disabled        = false;
+            this._confirmPending = false;
+            this.textContent     = '🗑 Eliminar cita';
+            this.style.background = '#fef2f2';
+            this.style.color     = '#ef4444';
+            this.style.border    = '1px solid #fecaca';
+            alert('No se pudo eliminar la cita. Recarga la página e inténtalo de nuevo.');
+        });
+    });
+
     // ── Modal ─────────────────────────────────────────────────────────────────
 
     document.getElementById('modal-nueva-cita').addEventListener('click', function(e) {
