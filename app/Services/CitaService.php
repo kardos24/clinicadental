@@ -40,6 +40,8 @@ class CitaService
                 'end'            => $c->fecha_hora->addMinutes($c->duracion_minutos)->toIso8601String(),
                 'color'          => $c->estado_color,
                 'estado'         => $c->estado,
+                'motivo'         => $c->motivo,
+                'notas'          => $c->notas,
                 'cliente_id'     => $c->cliente_id,
                 'cliente_nombre' => $c->cliente->nombre_completo,
             ]);

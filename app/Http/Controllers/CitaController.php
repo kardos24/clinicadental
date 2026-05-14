@@ -90,6 +90,9 @@ class CitaController extends Controller
     public function destroy(Cita $cita)
     {
         $cita->delete();
+        if (request()->expectsJson()) {
+            return response()->json(['ok' => true]);
+        }
         return back()->with('success', 'Cita eliminada.');
     }
 
