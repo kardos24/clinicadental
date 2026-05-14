@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 @section('title', 'Mis citas — Clínica Dental Mula')
 @section('page-title', 'Mis citas')
 
@@ -8,7 +8,7 @@
 <div class="card" style="text-align:center;padding:3rem;">
     <div style="font-size:3rem;margin-bottom:1rem;">📅</div>
     <h3>No tienes citas registradas</h3>
-    <p style="color:var(--texto-med);margin:.75rem 0 1.5rem;">
+    <p style="color:var(--text-light);margin:.75rem 0 1.5rem;">
         Puedes solicitar una cita y el equipo de la clínica la confirmará en breve.
     </p>
     <button class="btn btn-success" onclick="document.getElementById('modal-solicitar').classList.add('open')">
@@ -32,14 +32,14 @@
         <div style="display:flex;align-items:start;justify-content:space-between;margin-bottom:.75rem;">
             <div>
                 <div style="font-size:1.15rem;font-weight:700;">{{ $cita->fecha_hora->format('d/m/Y') }}</div>
-                <div style="font-size:1.5rem;font-weight:700;color:var(--azul);">{{ $cita->fecha_hora->format('H:i') }}</div>
+                <div style="font-size:1.5rem;font-weight:700;color:var(--primary);">{{ $cita->fecha_hora->format('H:i') }}</div>
             </div>
             <span class="badge badge-{{ $cita->estado }}">{{ $cita->estado_label }}</span>
         </div>
         <p style="font-weight:600;margin-bottom:.3rem;">{{ $cita->motivo }}</p>
-        <p style="font-size:.85rem;color:var(--texto-med);">Duración: {{ $cita->duracion_minutos }} min</p>
+        <p style="font-size:.85rem;color:var(--text-light);">Duración: {{ $cita->duracion_minutos }} min</p>
         @if($cita->notas)
-        <p style="font-size:.82rem;background:var(--gris-fondo);padding:.5rem;border-radius:5px;margin-top:.5rem;">
+        <p style="font-size:.82rem;background:var(--gray-50);padding:.5rem;border-radius:5px;margin-top:.5rem;">
             {{ $cita->notas }}
         </p>
         @endif
@@ -82,7 +82,7 @@
             <h3>📅 Solicitar cita</h3>
             <button class="modal-close" onclick="document.getElementById('modal-solicitar').classList.remove('open')">×</button>
         </div>
-        <p style="font-size:.88rem;color:var(--texto-med);margin-bottom:1rem;background:var(--azul-claro);padding:.75rem;border-radius:6px;">
+        <p style="font-size:.88rem;color:var(--text-light);margin-bottom:1rem;background:var(--primary-light);padding:.75rem;border-radius:6px;">
             ℹ️ Tu solicitud quedará como <strong>Pendiente</strong> hasta que el equipo de la clínica la confirme.
             Recibirás una notificación cuando se confirme.
         </p>

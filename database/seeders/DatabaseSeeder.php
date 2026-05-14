@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // ── Inicializar dentadura ───────────────────────────────────────────
+        // ── Inicializar dentadura (modelo multi-cara) ─────────────────────
         $dientes = array_merge(
             Dentadura::DIENTES_SUPERIORES,
             Dentadura::DIENTES_INFERIORES
@@ -61,21 +61,24 @@ class DatabaseSeeder extends Seeder
         foreach ($dientes as $num) {
             Dentadura::firstOrCreate(
                 ['cliente_id' => $cliente->id, 'num_diente' => (string)$num],
-                ['estado' => 'sano', 'fecha_actualizacion' => now()]
+                ['estado_pieza' => 'presente', 'fecha_actualizacion' => now()]
             );
         }
 
-        // Algunos dientes con problemas para demo
+        // Algunos dientes con problemas de demo (estados por cara)
         $problemasDemo = [
-            '16' => 'caries',
-            '36' => 'picado',
-            '46' => 'sustituido',
-            '11' => 'partido',
+            '16' => ['cara_oclusal' => 'caries', 'cara_mesial' => 'obturacion'],           // molar con caries en oclusal y obturación en mesial
+            '36' => ['cara_vestibular' => 'obturacion'],                                     // molar con obturación en vestibular
+            '46' => ['estado_pieza' => 'implante'],                                          // pieza sustituida por implante
+            '11' => ['cara_vestibular' => 'fractura'],                                       // incisivo con fractura en vestibular
+            '27' => ['estado_pieza' => 'corona'],                                            // molar con corona
+            '34' => ['cara_distal' => 'caries', 'cara_oclusal' => 'sellante'],              // premolar con caries distal y sellante oclusal
         ];
-        foreach ($problemasDemo as $diente => $estado) {
+        foreach ($problemasDemo as $diente => $campos) {
+            $campos['fecha_actualizacion'] = now();
             Dentadura::where('cliente_id', $cliente->id)
                      ->where('num_diente', $diente)
-                     ->update(['estado' => $estado, 'fecha_actualizacion' => now()]);
+                     ->update($campos);
         }
 
         // ── Historial clínico de ejemplo ────────────────────────────────────

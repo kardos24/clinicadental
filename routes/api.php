@@ -1,28 +1,30 @@
 <?php
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Api\AuthApiController;
+use App\Http\Controllers\Api\CitaApiController;
+use App\Http\Controllers\Api\ClienteApiController;
+use App\Http\Controllers\Api\DispositivoApiController;
 use Illuminate\Support\Facades\Route;
 
-// ─── Rutas públicas (sin token) ───────────────────────────────────────────────
-Route::post('/login',  [ApiController::class, 'login']);
+Route::post('/login', [AuthApiController::class, 'login']);
 
-// ─── Rutas protegidas con Sanctum ─────────────────────────────────────────────
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [ApiController::class, 'logout']);
+    Route::post('/logout', [AuthApiController::class, 'logout']);
+    Route::post('/dispositivo/token', [DispositivoApiController::class, 'registrarToken']);
 
-    // Dispositivo / token FCM
-    Route::post('/dispositivo/token', [ApiController::class, 'registrarToken']);
+    Route::get('/mis-citas', [CitaApiController::class, 'index']);
+    Route::post('/citas',    [CitaApiController::class, 'store']);
 
-    // Clientes (gestor)
-    Route::get('/clientes',           [ApiController::class, 'clientes']);
-    Route::get('/clientes/{cliente}', [ApiController::class, 'cliente']);
+    // Gestor only
+    Route::middleware('gestor')->group(function () {
+        Route::get('/clientes', [ClienteApiController::class, 'index']);
+        Route::get('/citas/mes', [CitaApiController::class, 'mes']);
+        Route::patch('/citas/{cita}/estado', [CitaApiController::class, 'actualizarEstado']);
+    });
 
-    // Citas
-    Route::get('/mis-citas',                       [ApiController::class, 'misCitas']);
-    Route::get('/citas/mes',                       [ApiController::class, 'citasGestor']);
-    Route::post('/citas',                          [ApiController::class, 'crearCita']);
-    Route::patch('/citas/{cita}/estado',           [ApiController::class, 'actualizarEstadoCita']);
-
-    // Historial
-    Route::get('/clientes/{cliente}/historial', [ApiController::class, 'historial']);
+    // Gestor o propietario del cliente
+    Route::middleware('gestor.o.propietario')->group(function () {
+        Route::get('/clientes/{cliente}',           [ClienteApiController::class, 'show']);
+        Route::get('/clientes/{cliente}/historial', [ClienteApiController::class, 'historial']);
+    });
 });

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 @section('title', 'Acceder — Clínica Dental Mula')
 
 @section('content')
@@ -7,7 +7,7 @@
         <div style="text-align:center;margin-bottom:2rem;">
             <div style="font-size:3rem;margin-bottom:.5rem;">🦷</div>
             <h1 style="font-size:1.8rem;">Clínica Dental Mula</h1>
-            <p style="color:var(--texto-med);font-size:.95rem;">Accede a tu área personal</p>
+            <p style="color:var(--text-light);font-size:.95rem;">Accede a tu área personal</p>
         </div>
 
         <div class="card">
@@ -18,7 +18,7 @@
                     <input class="form-control" type="email" id="email" name="email"
                            value="{{ old('email') }}" required autofocus
                            placeholder="tu@email.com">
-                    @error('email')<p style="color:var(--rojo);font-size:.82rem;margin-top:.3rem">{{ $message }}</p>@enderror
+                    @error('email')<p style="color:var(--danger);font-size:.82rem;margin-top:.3rem">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="form-group">
@@ -37,7 +37,7 @@
                 </button>
             </form>
 
-            <div style="text-align:center;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--gris-borde);font-size:.9rem;color:var(--texto-med);">
+            <div style="text-align:center;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--gray-200);font-size:.9rem;color:var(--text-light);">
                 ¿Eres paciente y no tienes cuenta?
                 <a href="{{ route('register') }}" style="font-weight:600;">Regístrate aquí</a>
             </div>

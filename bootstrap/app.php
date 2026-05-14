@@ -13,7 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'gestor' => \App\Http\Middleware\EsGestor::class,
+            'gestor'               => \App\Http\Middleware\EsGestor::class,
+            'gestor.o.propietario' => \App\Http\Middleware\EsGestorOPropietario::class,
         ]);
 
         $middleware->api(prepend: [

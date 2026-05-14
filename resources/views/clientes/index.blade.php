@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 @section('title', 'Clientes — Clínica Dental Mula')
 @section('page-title', 'Listado de clientes')
 
@@ -37,8 +37,8 @@
                 @forelse($clientes as $cliente)
                 <tr>
                     <td>
-                        <span style="font-family:monospace;font-size:.85rem;background:var(--azul-claro);
-                              padding:.15rem .5rem;border-radius:4px;color:var(--azul);">
+                        <span style="font-family:monospace;font-size:.85rem;background:var(--primary-light);
+                              padding:.15rem .5rem;border-radius:4px;color:var(--primary);">
                             {{ $cliente->num_filiacion ?? '—' }}
                         </span>
                     </td>
@@ -58,7 +58,7 @@
                     </td>
                     <td>
                         <span class="badge {{ $cliente->citas_count > 0 ? 'badge-confirmada' : '' }}"
-                              style="{{ $cliente->citas_count == 0 ? 'color:var(--texto-med)' : '' }}">
+                              style="{{ $cliente->citas_count == 0 ? 'color:var(--text-light)' : '' }}">
                             {{ $cliente->citas_count }}
                         </span>
                     </td>
@@ -76,7 +76,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align:center;padding:2rem;color:var(--texto-med);">
+                    <td colspan="6" style="text-align:center;padding:2rem;color:var(--text-light);">
                         @if($buscar)
                             No se encontraron pacientes con "{{ $buscar }}"
                         @else
@@ -91,13 +91,13 @@
     </div>
 
     @if($clientes->hasPages())
-    <div style="padding:1rem 1.5rem;border-top:1px solid var(--gris-borde);">
+    <div style="padding:1rem 1.5rem;border-top:1px solid var(--gray-200);">
         {{ $clientes->links() }}
     </div>
     @endif
 </div>
 
-<p style="margin-top:.75rem;font-size:.85rem;color:var(--texto-med);">
+<p style="margin-top:.75rem;font-size:.85rem;color:var(--text-light);">
     Total: <strong>{{ $clientes->total() }}</strong> pacientes
 </p>
 @endsection
