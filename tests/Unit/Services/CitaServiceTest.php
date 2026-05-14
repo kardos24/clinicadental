@@ -49,7 +49,7 @@ class CitaServiceTest extends TestCase
         $this->assertDatabaseHas('citas', ['id' => $cita->id, 'estado' => 'confirmada']);
     }
 
-    public function test_citas_del_mes_retorna_formato_fullcalendar(): void
+    public function test_citas_por_rango_retorna_formato_fullcalendar(): void
     {
         $cliente = Cliente::factory()->create();
         Cita::factory()->create([
@@ -59,7 +59,9 @@ class CitaServiceTest extends TestCase
             'estado'     => 'confirmada',
         ]);
 
-        $resultado = $this->service->citasDelMes(now()->year, now()->month);
+        $start    = now()->startOfMonth()->toDateString();
+        $end      = now()->endOfMonth()->addDay()->toDateString();
+        $resultado = $this->service->citasPorRango($start, $end);
 
         $this->assertCount(1, $resultado);
         $this->assertArrayHasKey('title', $resultado->first());

@@ -63,8 +63,8 @@ class CitaApiController extends Controller
 
     public function mes(Request $request): JsonResponse
     {
-        $year  = $request->get('year',  now()->year);
-        $month = $request->get('month', now()->month);
-        return response()->json($this->citaService->citasDelMes($year, $month));
+        $start = $request->get('start', now()->startOfMonth()->toDateString());
+        $end   = $request->get('end',   now()->endOfMonth()->addDay()->toDateString());
+        return response()->json($this->citaService->citasPorRango($start, $end));
     }
 }

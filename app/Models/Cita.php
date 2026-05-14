@@ -83,10 +83,4 @@ class Cita extends Model
                      ->orderBy('fecha_hora');
     }
 
-    public function scopeDelMes($query, int $year, int $month)
-    {
-        return $query->whereYear('fecha_hora', $year)
-                     ->whereMonth('fecha_hora', $month)
-                     ->orderBy('fecha_hora');
-    }
 }

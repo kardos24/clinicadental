@@ -43,18 +43,6 @@ class CitaModelTest extends TestCase
         }
     }
 
-    public function test_scope_del_mes_solo_devuelve_citas_de_ese_mes(): void
-    {
-        $cliente = Cliente::factory()->create();
-        Cita::factory()->create(['cliente_id' => $cliente->id, 'fecha_hora' => '2026-05-15 10:00:00', 'estado' => 'confirmada']);
-        Cita::factory()->create(['cliente_id' => $cliente->id, 'fecha_hora' => '2026-06-10 10:00:00', 'estado' => 'confirmada']);
-
-        $resultado = Cita::delMes(2026, 5)->get();
-
-        $this->assertCount(1, $resultado);
-        $this->assertSame('2026-05-15', $resultado->first()->fecha_hora->format('Y-m-d'));
-    }
-
     public function test_scope_proximas_excluye_pasadas_y_finalizadas(): void
     {
         $cliente = Cliente::factory()->create();
