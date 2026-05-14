@@ -103,6 +103,20 @@ class CitaTest extends TestCase
         $this->assertDatabaseMissing('citas', ['id' => $cita->id]);
     }
 
+    public function test_gestor_puede_eliminar_cita_via_json(): void
+    {
+        $gestor  = User::factory()->gestor()->create();
+        $cliente = Cliente::factory()->create();
+        $cita    = Cita::factory()->create(['cliente_id' => $cliente->id]);
+
+        $this->actingAs($gestor)
+             ->deleteJson(route('citas.destroy', $cita))
+             ->assertOk()
+             ->assertJson(['ok' => true]);
+
+        $this->assertDatabaseMissing('citas', ['id' => $cita->id]);
+    }
+
     public function test_api_mes_devuelve_json_fullcalendar(): void
     {
         $gestor  = User::factory()->gestor()->create();

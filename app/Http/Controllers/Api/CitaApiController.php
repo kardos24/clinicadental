@@ -61,10 +61,30 @@ class CitaApiController extends Controller
         return response()->json($cita->load('cliente'));
     }
 
+    public function update(Request $request, Cita $cita): JsonResponse
+    {
+        $data = $request->validate([
+            'fecha_hora'       => 'sometimes|date',
+            'duracion_minutos' => 'sometimes|integer|min:15|max:240',
+            'motivo'           => 'sometimes|string|max:200',
+            'estado'           => 'sometimes|in:pendiente,confirmada,cancelada,realizada,no_presentado',
+            'notas'            => 'nullable|string',
+        ]);
+
+        $cita->update($data);
+        return response()->json($cita->fresh('cliente'));
+    }
+
+    public function destroy(Cita $cita): JsonResponse
+    {
+        $cita->delete();
+        return response()->json(['ok' => true]);
+    }
+
     public function mes(Request $request): JsonResponse
     {
-        $year  = $request->get('year',  now()->year);
-        $month = $request->get('month', now()->month);
-        return response()->json($this->citaService->citasDelMes($year, $month));
+        $start = $request->get('start', now()->startOfMonth()->toDateString());
+        $end   = $request->get('end',   now()->endOfMonth()->addDay()->toDateString());
+        return response()->json($this->citaService->citasPorRango($start, $end));
     }
 }

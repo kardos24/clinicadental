@@ -37,26 +37,11 @@ class CitaService
                 'id'             => $c->id,
                 'title'          => $c->cliente->nombre_completo . ' — ' . $c->motivo,
                 'start'          => $c->fecha_hora->toIso8601String(),
-                'end'            => $c->fecha_hora->addMinutes($c->duracion_minutos)->toIso8601String(),
+                'end'            => $c->fecha_hora->copy()->addMinutes($c->duracion_minutos)->toIso8601String(),
                 'color'          => $c->estado_color,
                 'estado'         => $c->estado,
-                'cliente_id'     => $c->cliente_id,
-                'cliente_nombre' => $c->cliente->nombre_completo,
-            ]);
-    }
-
-    public function citasDelMes(int $year, int $month): Collection
-    {
-        return Cita::with('cliente:id,apellidos,nombre')
-            ->delMes($year, $month)
-            ->get()
-            ->map(fn($c) => [
-                'id'             => $c->id,
-                'title'          => $c->cliente->nombre_completo . ' — ' . $c->motivo,
-                'start'          => $c->fecha_hora->toIso8601String(),
-                'end'            => $c->fecha_hora->addMinutes($c->duracion_minutos)->toIso8601String(),
-                'color'          => $c->estado_color,
-                'estado'         => $c->estado,
+                'motivo'         => $c->motivo,
+                'notas'          => $c->notas,
                 'cliente_id'     => $c->cliente_id,
                 'cliente_nombre' => $c->cliente->nombre_completo,
             ]);

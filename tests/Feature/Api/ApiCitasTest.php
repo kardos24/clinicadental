@@ -120,4 +120,55 @@ class ApiCitasTest extends TestCase
             'estado' => 'cancelada',
         ])->assertForbidden();
     }
+
+    public function test_gestor_puede_actualizar_cita(): void
+    {
+        $gestor  = User::factory()->gestor()->create();
+        $cliente = Cliente::factory()->create();
+        $cita    = Cita::factory()->create(['cliente_id' => $cliente->id]);
+        $token   = $gestor->createToken('app')->plainTextToken;
+
+        $this->withToken($token)->putJson("/api/citas/{$cita->id}", [
+            'motivo' => 'Motivo actualizado',
+            'notas'  => 'Notas de prueba',
+        ])->assertOk();
+
+        $this->assertDatabaseHas('citas', ['id' => $cita->id, 'motivo' => 'Motivo actualizado']);
+    }
+
+    public function test_cliente_no_puede_actualizar_cita(): void
+    {
+        $user    = User::factory()->create(['role' => 'cliente']);
+        $cliente = Cliente::factory()->create(['user_id' => $user->id]);
+        $cita    = Cita::factory()->create(['cliente_id' => $cliente->id]);
+        $token   = $user->createToken('app')->plainTextToken;
+
+        $this->withToken($token)->putJson("/api/citas/{$cita->id}", [
+            'motivo' => 'Intento de cambio',
+        ])->assertForbidden();
+    }
+
+    public function test_gestor_puede_eliminar_cita(): void
+    {
+        $gestor  = User::factory()->gestor()->create();
+        $cliente = Cliente::factory()->create();
+        $cita    = Cita::factory()->create(['cliente_id' => $cliente->id]);
+        $token   = $gestor->createToken('app')->plainTextToken;
+
+        $this->withToken($token)->deleteJson("/api/citas/{$cita->id}")
+             ->assertOk()
+             ->assertJson(['ok' => true]);
+
+        $this->assertDatabaseMissing('citas', ['id' => $cita->id]);
+    }
+
+    public function test_cliente_no_puede_eliminar_cita(): void
+    {
+        $user    = User::factory()->create(['role' => 'cliente']);
+        $cliente = Cliente::factory()->create(['user_id' => $user->id]);
+        $cita    = Cita::factory()->create(['cliente_id' => $cliente->id]);
+        $token   = $user->createToken('app')->plainTextToken;
+
+        $this->withToken($token)->deleteJson("/api/citas/{$cita->id}")->assertForbidden();
+    }
 }

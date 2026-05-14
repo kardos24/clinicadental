@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Clientes;
 
 use App\Models\Dentadura;
 use Tests\TestCase;
