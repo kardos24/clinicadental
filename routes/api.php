@@ -26,5 +26,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('gestor.o.propietario')->group(function () {
         Route::get('/clientes/{cliente}',           [ClienteApiController::class, 'show']);
         Route::get('/clientes/{cliente}/historial', [ClienteApiController::class, 'historial']);
+        Route::get('/clientes/{cliente}/dentadura', [ClienteApiController::class, 'dentadura']);
     });
 });

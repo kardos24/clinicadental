@@ -29,4 +29,10 @@ class ClienteApiController extends Controller
         $historial = $cliente->historialClinico()->paginate(20);
         return response()->json($historial);
     }
+
+    public function dentadura(Request $request, Cliente $cliente): JsonResponse
+    {
+        $dentadura = $cliente->dentadura()->orderBy('num_diente')->get();
+        return response()->json($dentadura);
+    }
 }

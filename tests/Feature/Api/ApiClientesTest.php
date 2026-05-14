@@ -96,4 +96,31 @@ class ApiClientesTest extends TestCase
 
         $this->withToken($token)->getJson("/api/clientes/{$ajeno->id}/historial")->assertForbidden();
     }
+
+    public function test_gestor_puede_ver_dentadura(): void
+    {
+        $gestor  = User::factory()->gestor()->create();
+        $cliente = Cliente::factory()->create();
+        $token   = $gestor->createToken('app')->plainTextToken;
+
+        $this->withToken($token)->getJson("/api/clientes/{$cliente->id}/dentadura")->assertOk();
+    }
+
+    public function test_propietario_puede_ver_su_dentadura(): void
+    {
+        $user    = User::factory()->create(['role' => 'cliente']);
+        $cliente = Cliente::factory()->create(['user_id' => $user->id]);
+        $token   = $user->createToken('app')->plainTextToken;
+
+        $this->withToken($token)->getJson("/api/clientes/{$cliente->id}/dentadura")->assertOk();
+    }
+
+    public function test_otro_cliente_no_puede_ver_dentadura_ajena(): void
+    {
+        $user  = User::factory()->create(['role' => 'cliente']);
+        $ajeno = Cliente::factory()->create();
+        $token = $user->createToken('app')->plainTextToken;
+
+        $this->withToken($token)->getJson("/api/clientes/{$ajeno->id}/dentadura")->assertForbidden();
+    }
 }

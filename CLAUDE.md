@@ -264,7 +264,7 @@ match(true) {
   - `GET /api/mis-citas` — Own appointments
   - `POST /api/citas` — Create appointment
   - **Gestor only** (gestor middleware): `GET /api/clientes`, `GET /api/citas/mes`, `PATCH /api/citas/{id}/estado`
-  - **Gestor or owner** (gestor.o.propietario middleware): `GET /api/clientes/{id}`, `GET /api/clientes/{id}/historial`
+  - **Gestor or owner** (gestor.o.propietario middleware): `GET /api/clientes/{id}`, `GET /api/clientes/{id}/historial`, `GET /api/clientes/{id}/dentadura`
 
 ### Scheduled Tasks (`routes/console.php`)
 - **Daily at 09:00** — Sends push notifications for next-day appointments (`recordatorio_enviado = false`, status confirmada/pendiente)
