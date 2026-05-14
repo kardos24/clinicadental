@@ -110,6 +110,59 @@
     padding: 8px 14px 13px;
     border-top: 1px solid #f1f5f9;
 }
+
+/* Modal detalle */
+#detalle-header { transition: background .2s; }
+#detalle-header .modal-close { color: rgba(255,255,255,.75); }
+#detalle-header .modal-close:hover { color: #fff; }
+.detalle-fila {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.detalle-label {
+    color: #64748b;
+    font-size: .82rem;
+    width: 70px;
+    flex-shrink: 0;
+}
+.detalle-valor {
+    font-size: .9rem;
+    color: #1e293b;
+}
+.detalle-seccion {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 14px;
+    margin-top: 14px;
+}
+.detalle-seccion-titulo {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+#detalle-botones-estado { display: flex; flex-wrap: wrap; gap: 6px; }
+.detalle-btn-estado {
+    font-size: .8rem;
+    padding: 5px 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity .15s;
+}
+.detalle-btn-estado:hover { opacity: .8; }
+.detalle-btn-estado:disabled { opacity: .5; cursor: not-allowed; }
+#detalle-btn-eliminar {
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    font-size: .82rem;
+    transition: background .15s, color .15s;
+}
 </style>
 @endpush
 
@@ -132,6 +185,48 @@
                 style="width:100%;justify-content:center;font-size:.84rem;padding:7px 14px;">
             📅 Nueva cita
         </button>
+    </div>
+</div>
+
+{{-- ── MODAL detalle de cita ─────────────────────────────────────────────────────────── --}}
+<div class="modal-backdrop" id="modal-detalle-cita">
+    <div class="modal" style="max-width:440px;">
+        <div class="modal-header" id="detalle-header">
+            <div>
+                <span id="detalle-estado-badge"
+                      style="font-size:.78rem;opacity:.85;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:2px;"></span>
+                <span id="detalle-fecha" style="font-weight:600;font-size:.95rem;"></span>
+            </div>
+            <button class="modal-close" id="detalle-close">×</button>
+        </div>
+        <div style="padding:18px 22px 20px;">
+            <div class="detalle-fila">
+                <span class="detalle-label">Paciente</span>
+                <a id="detalle-paciente-link" href="#" target="_blank"
+                   style="font-weight:500;color:var(--primary);font-size:.9rem;text-decoration:none;"></a>
+            </div>
+            <div class="detalle-fila">
+                <span class="detalle-label">Motivo</span>
+                <span id="detalle-motivo" class="detalle-valor"></span>
+            </div>
+            <div class="detalle-fila">
+                <span class="detalle-label">Duración</span>
+                <span id="detalle-duracion" class="detalle-valor"></span>
+            </div>
+            <div class="detalle-fila" style="margin-bottom:0;">
+                <span class="detalle-label">Notas</span>
+                <span id="detalle-notas" class="detalle-valor" style="color:#64748b;font-style:italic;"></span>
+            </div>
+
+            <div class="detalle-seccion">
+                <p class="detalle-seccion-titulo">Cambiar estado</p>
+                <div id="detalle-botones-estado"></div>
+            </div>
+
+            <div class="detalle-seccion" style="display:flex;justify-content:flex-end;">
+                <button id="detalle-btn-eliminar" class="btn">🗑 Eliminar cita</button>
+            </div>
+        </div>
     </div>
 </div>
 
